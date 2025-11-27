@@ -358,23 +358,40 @@ auto manager = std::make_unique<GCInputManager>();
             
             if (object.system->gpu->gp1_08.colorDepth == gpu::GP1_08::ColorDepth::bit24) {
                 if (auto buffer = [[MandarineEmulator sharedInstance] rgb888])
-                    buffer(object.system->gpu->vram.data(),
-                           object.system->gpu->displayAreaStartX,
-                           object.system->gpu->displayAreaStartY,
-                           object.system->gpu->gp1_08.getHorizontalResoulution(),
-                           object.system->gpu->gp1_08.getVerticalResoulution());
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        buffer(object.system->gpu->vram.data(),
+                               object.system->gpu->displayAreaStartX,
+                               object.system->gpu->displayAreaStartY,
+                               object.system->gpu->gp1_08.getHorizontalResoulution(),
+                               object.system->gpu->gp1_08.getVerticalResoulution());
+                    });
             } else {
                 if (auto buffer = [[MandarineEmulator sharedInstance] bgr555])
-                    buffer(object.system->gpu->vram.data(),
-                           object.system->gpu->displayAreaStartX,
-                           object.system->gpu->displayAreaStartY,
-                           object.system->gpu->gp1_08.getHorizontalResoulution(),
-                           object.system->gpu->gp1_08.getVerticalResoulution());
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        buffer(object.system->gpu->vram.data(),
+                               object.system->gpu->displayAreaStartX,
+                               object.system->gpu->displayAreaStartY,
+                               object.system->gpu->gp1_08.getHorizontalResoulution(),
+                               object.system->gpu->gp1_08.getVerticalResoulution());
+                    });
             }
             
             limitFramerate(true, object.system->gpu->isNtsc());
         }
     });
+}
+
+-(void) stop {
+    object.thread.request_stop();
+    if (object.thread.joinable())
+        object.thread.join();
+    
+    system_tools::saveMemoryCard(object.system, 0, true);
+    system_tools::saveMemoryCard(object.system, 1, true);
+    
+    Sound::close();
+    
+    object.paused.store(false);
 }
 
 -(void) pause:(BOOL)pause {
@@ -404,6 +421,14 @@ auto manager = std::make_unique<GCInputManager>();
     auto string = [stick cStringUsingEncoding:NSUTF8StringEncoding];
     auto index = [[NSNumber numberWithInteger:slot] intValue] + 1;
     manager->drag(string, index, value);
+}
+
+-(void) load:(NSURL *)url {
+    state::loadFromFile(object.system.get(), [url.path UTF8String]);
+}
+
+-(void) save:(NSURL *)url {
+    state::saveToFile(object.system.get(), [url.path UTF8String]);
 }
 
 -(NSString *) id:(NSURL *)url {

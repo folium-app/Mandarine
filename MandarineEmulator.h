@@ -18,11 +18,15 @@ NS_ASSUME_NONNULL_BEGIN
 -(void) insertCartridge:(NSURL *)url NS_SWIFT_NAME(insert(_:));
 
 -(void) start;
+-(void) stop;
 -(void) pause:(BOOL)pause;
 -(BOOL) isPaused;
 
 -(void) input:(NSInteger)slot button:(NSString *)button pressed:(BOOL)pressed;
 -(void) drag:(NSInteger)slot stick:(NSString *)stick value:(int16_t)value;
+
+-(void) load:(NSURL *)url;
+-(void) save:(NSURL *)url;
 
 -(NSString *) id:(NSURL *)url NS_SWIFT_NAME(id(from:));
 @end

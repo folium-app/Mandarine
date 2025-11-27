@@ -9,11 +9,11 @@ public typealias BufferHandler = (UnsafeMutableRawPointer, Int, Int, Int, Int) -
 public typealias BGR555Handler = BufferHandler
 public typealias RGB888Handler = (UnsafeMutablePointer<UInt16>, Int, Int, Int, Int) -> Void
 
-public enum MandarinePSXButton : String {
-    case dpadUp = "dpad_up",
-         dpadRight = "dpad_right",
-         dpadDown = "dpad_down",
-         dpadLeft = "dpad_left",
+public enum PSXButton : String {
+    case up = "dpad_up",
+         right = "dpad_right",
+         down = "dpad_down",
+         left = "dpad_left",
          triangle = "triangle",
          circle = "circle",
          cross = "cross",
@@ -24,10 +24,12 @@ public enum MandarinePSXButton : String {
          r1 = "r1",
          l2 = "l2",
          r2 = "r2",
+         
          lUp = "l_up",
          lRight = "l_right",
          lDown = "l_down",
          lLeft = "l_left",
+         
          rUp = "r_up",
          rRight = "r_right",
          rDown = "r_down",
@@ -47,6 +49,10 @@ public class Mandarine {
     
     public func start() {
         emulator.start()
+    }
+    
+    public func stop() {
+        emulator.stop()
     }
     
     public func pause(_ pause: Bool) {
@@ -70,12 +76,20 @@ public class Mandarine {
         emulator.rgb888 = buffer
     }
     
-    public func input(_ slot: Int, _ button: MandarinePSXButton, _ pressed: Bool) {
-        emulator.input(slot, button: button.string, pressed: pressed)
+    public func button(button: PSXButton, player: Int, pressed: Bool) {
+        emulator.input(player, button: button.string, pressed: pressed)
     }
     
-    public func drag(_ slot: Int, _ stick: MandarinePSXButton, _ value: Int16) {
+    public func drag(_ slot: Int, _ stick: PSXButton, _ value: Int16) {
         emulator.drag(slot, stick: stick.string, value: value)
+    }
+    
+    public func load(state url: URL) {
+        emulator.load(url)
+    }
+    
+    public func save(state url: URL) {
+        emulator.save(url)
     }
     
     public func id(from url: URL) -> String {
