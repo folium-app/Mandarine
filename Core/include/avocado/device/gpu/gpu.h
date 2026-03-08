@@ -10,7 +10,7 @@
 
 struct System;
 class Render;
-class OpenGL;
+class MetalRenderer;
 
 namespace gpu {
 
@@ -20,7 +20,7 @@ const int VRAM_HEIGHT = 512;
 class GPU {
     friend struct ::System;
     friend class ::Render;
-    friend class ::OpenGL;
+    friend class ::MetalRenderer;
 
     System* sys;
 

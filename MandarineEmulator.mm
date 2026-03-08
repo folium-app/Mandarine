@@ -309,6 +309,11 @@ auto manager = std::make_unique<GCInputManager>();
 }
 
 -(void) insertCartridge:(NSURL *)url {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    bool (^boolean)(NSString *) = ^bool(NSString *key) { return [defaults boolForKey:key]; };
+    int32_t (^signed32)(NSString *) = ^int32_t(NSString *key) { return [[NSNumber numberWithDouble:[defaults doubleForKey:key]] intValue]; };
+    
     NSURL *mandarineDirectoryURL = [[[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] firstObject] URLByAppendingPathComponent:@"Mandarine"];
     
     NSURL *mcdOne = [[mandarineDirectoryURL URLByAppendingPathComponent:@"memcards"] URLByAppendingPathComponent:@"card1.mcr"];
@@ -317,6 +322,11 @@ auto manager = std::make_unique<GCInputManager>();
     config.bios = [[[mandarineDirectoryURL URLByAppendingPathComponent:@"sysdata"] URLByAppendingPathComponent:@"bios.bin"].path UTF8String];
     config.memoryCard[0].path = [mcdOne.path UTF8String];
     config.memoryCard[1].path = [mcdTwo.path UTF8String];
+    config.options.graphics.forceNtsc = boolean(@"mandarine.v1.35.forceNTSC");
+    config.options.graphics.resolution.height = signed32(@"mandarine.v1.35.height");
+    config.options.graphics.resolution.width = signed32(@"mandarine.v1.35.width");
+    config.options.graphics.widescreen = boolean(@"mandarine.v1.35.widescreen");
+    // config.options.graphics.renderingMode = RenderingMode::hardware;
     
     if (![[NSFileManager defaultManager] fileExistsAtPath:mcdOne.path]) {
         std::array<uint8_t, memory_card::MEMCARD_SIZE> data;
