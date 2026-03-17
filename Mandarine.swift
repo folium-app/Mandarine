@@ -5,6 +5,111 @@
 //  Created by Jarrod Norwell on 17/11/2025.
 //
 
+@objcMembers
+public class MandarineCommon : NSObject {
+    public static var documentDirectoryURL: URL? {
+        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+    }
+    
+    public static var mandarineDirectoryURL: URL? {
+        if let documentDirectoryURL {
+            documentDirectoryURL.appending(component: "Mandarine")
+        } else {
+            nil
+        }
+    }
+    
+    public static var memcardsDirectoryURL: URL? {
+        if let mandarineDirectoryURL {
+            mandarineDirectoryURL.appending(component: "memcards")
+        } else {
+            nil
+        }
+    }
+    
+    public static var sysdataDirectoryURL: URL? {
+        if let mandarineDirectoryURL {
+            mandarineDirectoryURL.appending(component: "sysdata")
+        } else {
+            nil
+        }
+    }
+}
+
+public actor Mandarine {
+    public let emulator: MandarineEmulator = MandarineEmulator.shared()
+    
+    public init() {}
+    
+    
+    public func insert(cartridge: URL) {
+        emulator.insert(cartridge: cartridge)
+    }
+    
+    
+    public func pause() {
+        emulator.pause()
+    }
+    
+    public func start() {
+        emulator.start()
+    }
+    
+    public func stop() {
+        emulator.stop()
+    }
+    
+    public func unpause() {
+        emulator.unpause()
+    }
+    
+    
+    public var paused: Bool {
+        emulator.paused()
+    }
+    
+    public var running: Bool {
+        emulator.running()
+    }
+    
+    
+    public func press(button: String) {
+        emulator.press(button)
+    }
+    
+    public func release(button: String) {
+        emulator.release(button)
+    }
+    
+    
+    public func load(state: URL) {
+        emulator.load(state: state)
+    }
+    
+    public func save(state: URL) {
+        emulator.save(state: state)
+    }
+    
+    
+    public func identifier(cartridge: URL) -> String {
+        emulator.identifier(cartridge: cartridge)
+    }
+    
+    
+    public func audioCallback(output: @escaping (UnsafeMutablePointer<UInt16>, Int) -> Void) {
+        emulator.audioCallback = output
+    }
+    
+    public func videoCallback(output: @escaping (UnsafeMutableRawPointer, Int, Int, Int, Int) -> Void) { // BGR555
+        emulator.videoCallback = output
+    }
+    
+    public func secondaryVideoCallback(output: @escaping (UnsafeMutablePointer<UInt16>, Int, Int, Int, Int) -> Void) { // RGB24
+        emulator.secondaryVideoCallback = output
+    }
+}
+
+/*
 public typealias BufferHandler = (UnsafeMutableRawPointer, Int, Int, Int, Int) -> Void
 public typealias BGR555Handler = BufferHandler
 public typealias RGB888Handler = (UnsafeMutablePointer<UInt16>, Int, Int, Int, Int) -> Void
@@ -96,3 +201,4 @@ public class Mandarine {
         emulator.id(from: url).replacingOccurrences(of: "_", with: "-").replacingOccurrences(of: ".", with: "")
     }
 }
+*/

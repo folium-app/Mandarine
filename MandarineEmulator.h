@@ -10,25 +10,29 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MandarineEmulator : NSObject
-@property (nonatomic, strong, nullable) void (^bgr555) (void*, NSInteger, NSInteger, NSInteger, NSInteger);
-@property (nonatomic, strong, nullable) void (^rgb888) (uint16_t*, NSInteger, NSInteger, NSInteger, NSInteger);
+@property (nonatomic, strong, nullable) void (^audioCallback) (uint16_t*, NSInteger);
+@property (nonatomic, strong, nullable) void (^videoCallback) (void*, NSInteger, NSInteger, NSInteger, NSInteger);
+@property (nonatomic, strong, nullable) void (^secondaryVideoCallback) (uint16_t*, NSInteger, NSInteger, NSInteger, NSInteger);
 
 +(MandarineEmulator *) sharedInstance NS_SWIFT_NAME(shared());
 
--(void) insertCartridge:(NSURL *)url NS_SWIFT_NAME(insert(_:));
+-(void) insertCartridge:(NSURL *)url NS_SWIFT_NAME(insert(cartridge:));
 
+-(void) pause;
 -(void) start;
 -(void) stop;
--(void) pause:(BOOL)pause;
--(BOOL) isPaused;
+-(void) unpause;
 
--(void) input:(NSInteger)slot button:(NSString *)button pressed:(BOOL)pressed;
--(void) drag:(NSInteger)slot stick:(NSString *)stick value:(int16_t)value;
+-(BOOL) isPaused NS_SWIFT_NAME(paused());
+-(BOOL) isRunning NS_SWIFT_NAME(running());
 
--(void) load:(NSURL *)url;
--(void) save:(NSURL *)url;
+-(void) press:(NSString *)button;
+-(void) release:(NSString *)button;
 
--(NSString *) id:(NSURL *)url NS_SWIFT_NAME(id(from:));
+-(void) load:(NSURL *)url NS_SWIFT_NAME(load(state:));
+-(void) save:(NSURL *)url NS_SWIFT_NAME(save(state:));
+
+-(NSString *) identifier:(NSURL *)url NS_SWIFT_NAME(identifier(cartridge:));
 @end
 
 NS_ASSUME_NONNULL_END

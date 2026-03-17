@@ -6,6 +6,8 @@
 //
 
 #import "MandarineEmulator.h"
+#import "Mandarine-Swift.h"
+
 #import <GameController/GameController.h>
 
 #include <atomic>
@@ -35,10 +37,9 @@
 bool fileExists(const std::string &name) {
     FILE *f = fopen(name.c_str(), "r");
     bool exists = false;
-    if (f) {
+    if (f)
         exists = true;
-        fclose(f);
-    }
+    fclose(f);
     return exists;
 }
 
@@ -117,7 +118,7 @@ size_t findSystemCnf(std::ifstream& file, size_t startOffset, size_t maxReadSize
     return content.find("SYSTEM.CNF");
 }
 
-std::string gameID(const std::string& binFilePath) {
+std::string gameIdentifier(const std::string& binFilePath) {
     const int blockSize = 1024 * 1024; // Read in 1MB blocks
     std::ifstream binFile(binFilePath, std::ios::binary);
     if (!binFile.is_open()) {
@@ -292,7 +293,7 @@ struct Object {
     std::unique_ptr<System> system;
     
     std::jthread thread;
-    std::atomic<bool> paused;
+    std::atomic<bool> paused, running;
     std::mutex mutex;
     std::condition_variable_any cv;
 } object;
@@ -308,24 +309,23 @@ auto manager = std::make_unique<GCInputManager>();
     return sharedInstance;
 }
 
+
 -(void) insertCartridge:(NSURL *)url {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     bool (^boolean)(NSString *) = ^bool(NSString *key) { return [defaults boolForKey:key]; };
     int32_t (^signed32)(NSString *) = ^int32_t(NSString *key) { return [[NSNumber numberWithDouble:[defaults doubleForKey:key]] intValue]; };
     
-    NSURL *mandarineDirectoryURL = [[[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] firstObject] URLByAppendingPathComponent:@"Mandarine"];
+    NSURL *mcdOne = [MandarineCommon.memcardsDirectoryURL URLByAppendingPathComponent:@"card1.mcr"];
+    NSURL *mcdTwo = [MandarineCommon.memcardsDirectoryURL URLByAppendingPathComponent:@"card2.mcr"];
     
-    NSURL *mcdOne = [[mandarineDirectoryURL URLByAppendingPathComponent:@"memcards"] URLByAppendingPathComponent:@"card1.mcr"];
-    NSURL *mcdTwo = [[mandarineDirectoryURL URLByAppendingPathComponent:@"memcards"] URLByAppendingPathComponent:@"card2.mcr"];
-    
-    config.bios = [[[mandarineDirectoryURL URLByAppendingPathComponent:@"sysdata"] URLByAppendingPathComponent:@"bios.bin"].path UTF8String];
+    config.bios = [[MandarineCommon.sysdataDirectoryURL URLByAppendingPathComponent:@"bios.bin"].path UTF8String];
     config.memoryCard[0].path = [mcdOne.path UTF8String];
     config.memoryCard[1].path = [mcdTwo.path UTF8String];
-    config.options.graphics.forceNtsc = boolean(@"mandarine.v1.35.forceNTSC");
-    config.options.graphics.resolution.height = signed32(@"mandarine.v1.35.height");
-    config.options.graphics.resolution.width = signed32(@"mandarine.v1.35.width");
-    config.options.graphics.widescreen = boolean(@"mandarine.v1.35.widescreen");
+    config.options.graphics.forceNtsc = boolean(@"mandarine.v1.38.forceNTSC");
+    config.options.graphics.resolution.height = signed32(@"mandarine.v1.38.height");
+    config.options.graphics.resolution.width = signed32(@"mandarine.v1.38.width");
+    config.options.graphics.widescreen = boolean(@"mandarine.v1.38.widescreen");
     // config.options.graphics.renderingMode = RenderingMode::hardware;
     
     if (![[NSFileManager defaultManager] fileExistsAtPath:mcdOne.path]) {
@@ -351,6 +351,11 @@ auto manager = std::make_unique<GCInputManager>();
     InputManager::setInstance(manager.get());
 }
 
+
+-(void) pause {
+    object.paused.store(true);
+}
+
 -(void) start {
     object.thread = std::jthread([&](std::stop_token token) {
         using namespace std::chrono;
@@ -367,23 +372,19 @@ auto manager = std::make_unique<GCInputManager>();
             }
             
             if (object.system->gpu->gp1_08.colorDepth == gpu::GP1_08::ColorDepth::bit24) {
-                if (auto buffer = [[MandarineEmulator sharedInstance] rgb888])
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        buffer(object.system->gpu->vram.data(),
-                               object.system->gpu->displayAreaStartX,
-                               object.system->gpu->displayAreaStartY,
-                               object.system->gpu->gp1_08.getHorizontalResoulution(),
-                               object.system->gpu->gp1_08.getVerticalResoulution());
-                    });
+                if (auto buffer = [[MandarineEmulator sharedInstance] secondaryVideoCallback])
+                    buffer(object.system->gpu->vram.data(),
+                           object.system->gpu->displayAreaStartX,
+                           object.system->gpu->displayAreaStartY,
+                           object.system->gpu->gp1_08.getHorizontalResoulution(),
+                           object.system->gpu->gp1_08.getVerticalResoulution());
             } else {
-                if (auto buffer = [[MandarineEmulator sharedInstance] bgr555])
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        buffer(object.system->gpu->vram.data(),
-                               object.system->gpu->displayAreaStartX,
-                               object.system->gpu->displayAreaStartY,
-                               object.system->gpu->gp1_08.getHorizontalResoulution(),
-                               object.system->gpu->gp1_08.getVerticalResoulution());
-                    });
+                if (auto buffer = [[MandarineEmulator sharedInstance] videoCallback])
+                    buffer(object.system->gpu->vram.data(),
+                           object.system->gpu->displayAreaStartX,
+                           object.system->gpu->displayAreaStartY,
+                           object.system->gpu->gp1_08.getHorizontalResoulution(),
+                           object.system->gpu->gp1_08.getVerticalResoulution());
             }
             
             limitFramerate(true, object.system->gpu->isNtsc());
@@ -402,49 +403,48 @@ auto manager = std::make_unique<GCInputManager>();
     Sound::close();
     
     object.paused.store(false);
+    object.running.store(false);
 }
 
--(void) pause:(BOOL)pause {
-    if (pause)
-        object.paused.store(true);
-    else {
-        object.paused.store(false);
-        object.cv.notify_all();
-    }
+-(void) unpause {
+    object.paused.store(false);
+    object.cv.notify_all();
 }
+
 
 -(BOOL) isPaused {
     return object.paused.load();
 }
 
--(void) input:(NSInteger)slot button:(NSString *)button pressed:(BOOL)pressed {
+-(BOOL) isRunning {
+    return object.running.load();
+}
+
+
+-(void) press:(NSString *)button {
     auto string = [button cStringUsingEncoding:NSUTF8StringEncoding];
-    auto index = [[NSNumber numberWithInteger:slot] intValue] + 1;
-    if (pressed) {
-        manager->press(string, index);
-    } else {
-        manager->release(string, index);
-    }
+    manager->press(string, 1);
 }
 
--(void) drag:(NSInteger)slot stick:(NSString *)stick value:(int16_t)value {
-    auto string = [stick cStringUsingEncoding:NSUTF8StringEncoding];
-    auto index = [[NSNumber numberWithInteger:slot] intValue] + 1;
-    manager->drag(string, index, value);
+-(void) release:(NSString *)button {
+    auto string = [button cStringUsingEncoding:NSUTF8StringEncoding];
+    manager->release(string, 1);
 }
 
--(void) load:(NSURL *)url {
+
+-(void) load:(NSURL *)url NS_SWIFT_NAME(load(state:)) {
     state::loadFromFile(object.system.get(), [url.path UTF8String]);
 }
 
--(void) save:(NSURL *)url {
+-(void) save:(NSURL *)url NS_SWIFT_NAME(save(state:)) {
     state::saveToFile(object.system.get(), [url.path UTF8String]);
 }
 
--(NSString *) id:(NSURL *)url {
+
+-(NSString *) identifier:(NSURL *)url {
     NSString *string = @"";
     try {
-        string = [NSString stringWithCString:gameID([url.path UTF8String]).c_str() encoding:NSUTF8StringEncoding];
+        string = [NSString stringWithCString:gameIdentifier([url.path UTF8String]).c_str() encoding:NSUTF8StringEncoding];
     } catch (std::runtime_error& e) {
         NSLog(@"%@", [NSString stringWithCString:e.what() encoding:NSUTF8StringEncoding]);
         string = @"";
