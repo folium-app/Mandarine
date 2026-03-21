@@ -23,6 +23,9 @@
 #include <thread>
 #include <vector>
 
+#include <fmt/core.h>
+#include <fmt/format.h>
+#include <fmt/format-inl.h>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 

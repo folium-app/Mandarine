@@ -1,5 +1,7 @@
 #include "avocado/disc/format/cue_parser.h"
 #include <fmt/core.h>
+#include <fmt/format.h>
+#include <fmt/format-inl.h>
 #include <sstream>
 #include "avocado/utils/file.h"
 

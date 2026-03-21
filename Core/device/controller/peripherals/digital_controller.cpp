@@ -1,5 +1,7 @@
 #include "avocado/device/controller/peripherals/digital_controller.h"
 #include <fmt/core.h>
+#include <fmt/format.h>
+#include <fmt/format-inl.h>
 #include "avocado/config.h"
 #include "avocado/input/input_manager.h"
 

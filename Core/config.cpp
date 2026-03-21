@@ -1,5 +1,7 @@
 #include "avocado/config.h"
 #include <fmt/core.h>
+#include <fmt/format.h>
+#include <fmt/format-inl.h>
 
 namespace DefaultKeyBindings {
 // clang-format off

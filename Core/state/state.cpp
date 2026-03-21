@@ -1,5 +1,7 @@
 #include "avocado/state/state.h"
 #include <fmt/core.h>
+#include <fmt/format.h>
+#include <fmt/format-inl.h>
 #include <cereal/archives/binary.hpp>
 #include <cereal/types/array.hpp>
 #include <cereal/types/deque.hpp>
