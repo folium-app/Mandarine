@@ -101,9 +101,9 @@ class GPU {
     ivec2 clutCachePos{-1, -1};
     ColorDepth clutCacheColorDepth = ColorDepth::NONE;
 
+    std::vector<Vertex> vertices;
    private:
     // Hardware rendering
-    std::vector<Vertex> vertices;
 
     bool forceNtsc;
     bool softwareRendering;

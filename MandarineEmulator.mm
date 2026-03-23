@@ -32,18 +32,14 @@
 #include "avocado/config.h"
 #include "avocado/memory_card/card_formats.h"
 #include "avocado/input/input_manager.h"
+#include "avocado/sound/sound.h"
 #include "avocado/state/state.h"
 #include "avocado/system.h"
 #include "avocado/system_tools.h"
 #include "avocado/utils/file.h"
 
 bool fileExists(const std::string &name) {
-    FILE *f = fopen(name.c_str(), "r");
-    bool exists = false;
-    if (f)
-        exists = true;
-    fclose(f);
-    return exists;
+    return [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithCString:name.c_str() encoding:NSUTF8StringEncoding]];
 }
 
 std::vector<uint8_t> getFileContents(const std::string &name) {
@@ -86,31 +82,12 @@ bool putFileContents(const std::string &name, const std::string contents) {
 }
 
 std::string getFileContentsAsString(const std::string &name) {
-    std::string contents;
-
-    FILE *f = fopen(name.c_str(), "rb");
-    if (!f) return contents;
-
-    fseek(f, 0, SEEK_END);
-    int filesize = ftell(f);
-    fseek(f, 0, SEEK_SET);
-
-    contents.resize(filesize);
-    fread(&contents[0], 1, filesize, f);
-
-    fclose(f);
-    return contents;
+    return [[NSString stringWithContentsOfFile:[NSString stringWithCString:name.c_str() encoding:NSUTF8StringEncoding] encoding:NSUTF8StringEncoding error:nil] UTF8String];
 }
 
 size_t getFileSize(const std::string &name) {
-    FILE *f = fopen(name.c_str(), "rb");
-    if (!f) return 0;
-
-    fseek(f, 0, SEEK_END);
-    int size = ftell(f);
-    fclose(f);
-
-    return size;
+    NSDictionary<NSFileAttributeKey, id> *attrs = [[NSFileManager defaultManager] attributesOfItemAtPath:[NSString stringWithCString:name.c_str()                                                                                                                encoding:NSUTF8StringEncoding] error:nil];
+    return [attrs fileSize];
 }
 
 size_t findSystemCnf(std::ifstream& file, size_t startOffset, size_t maxReadSize) {
@@ -172,16 +149,14 @@ namespace {
 SDL_AudioDeviceID deviceID = 0;
 SDL_AudioStream* stream = nullptr;
 
-void audioCallback(void* userdata, SDL_AudioStream* stream, int additional_amount, int total_amount)
-{
+void audioCallback(void* userdata, SDL_AudioStream* stream, int additional_amount, int total_amount) {
     (void)userdata;
     
     // additional_amount is byte count
     if (additional_amount <= 0)
         return;
     
-    uint8_t* buf = (uint8_t*)malloc(additional_amount);
-    memset(buf, 0, additional_amount);
+    std::vector<uint8_t> data(additional_amount);
     
     std::unique_lock<std::mutex> lock(Sound::audioMutex);
     
@@ -194,16 +169,11 @@ void audioCallback(void* userdata, SDL_AudioStream* stream, int additional_amoun
         int16_t sample = Sound::buffer.front();
         Sound::buffer.pop_front();
         
-        // Write LE 16-bit PCM correctly
-        buf[i * 2 + 0] = (uint8_t)(sample & 0xFF);       // LSB
-        buf[i * 2 + 1] = (uint8_t)((sample >> 8) & 0xFF); // MSB
+        data.at(i * 2) = (uint8_t)sample & 0xFF;
+        data.at(i * 2 + 1) = (uint8_t)(sample >> 8) & 0xFF;
     }
     
-    lock.unlock();
-    
-    SDL_PutAudioStreamData(stream, buf, additional_amount);
-    
-    free(buf);
+    SDL_PutAudioStreamData(stream, data.data(), additional_amount);
 }
 }  // namespace
 
@@ -292,14 +262,14 @@ public:
     }
 };
 
-struct Object {
+struct MandarineObject {
     std::unique_ptr<System> system;
     
     std::jthread thread;
     std::atomic<bool> paused, running;
     std::mutex mutex;
     std::condition_variable_any cv;
-} object;
+} mandarineObject;
 
 auto manager = std::make_unique<GCInputManager>();
 @implementation MandarineEmulator
@@ -325,10 +295,10 @@ auto manager = std::make_unique<GCInputManager>();
     config.bios = [[MandarineCommon.sysdataDirectoryURL URLByAppendingPathComponent:@"bios.bin"].path UTF8String];
     config.memoryCard[0].path = [mcdOne.path UTF8String];
     config.memoryCard[1].path = [mcdTwo.path UTF8String];
-    config.options.graphics.forceNtsc = boolean(@"mandarine.v1.38.forceNTSC");
-    config.options.graphics.resolution.height = signed32(@"mandarine.v1.38.height");
-    config.options.graphics.resolution.width = signed32(@"mandarine.v1.38.width");
-    config.options.graphics.widescreen = boolean(@"mandarine.v1.38.widescreen");
+    // config.options.graphics.forceNtsc = boolean(@"mandarine.v1.38.forceNTSC");
+    // config.options.graphics.resolution.height = signed32(@"mandarine.v1.38.height");
+    // config.options.graphics.resolution.width = signed32(@"mandarine.v1.38.width");
+    // config.options.graphics.widescreen = boolean(@"mandarine.v1.38.widescreen");
     // config.options.graphics.renderingMode = RenderingMode::hardware;
     
     if (![[NSFileManager defaultManager] fileExistsAtPath:mcdOne.path]) {
@@ -347,80 +317,81 @@ auto manager = std::make_unique<GCInputManager>();
     if (config.options.sound.enabled)
         Sound::play();
     
-    object.system = system_tools::hardReset();
+    mandarineObject.system = system_tools::hardReset();
     
-    system_tools::loadFile(object.system, [url.path UTF8String]);
+    system_tools::loadFile(mandarineObject.system, [url.path UTF8String]);
     
     InputManager::setInstance(manager.get());
 }
 
 
 -(void) pause {
-    object.paused.store(true);
+    mandarineObject.paused.store(true);
 }
 
 -(void) start {
-    object.thread = std::jthread([&](std::stop_token token) {
+    mandarineObject.running.store(true);
+    mandarineObject.thread = std::jthread([&](std::stop_token token) {
         using namespace std::chrono;
 
         while (!token.stop_requested()) {
-            if (object.paused)
+            if (mandarineObject.paused)
                 continue;
             
-            if (object.system->state == System::State::run) {
-                object.system->gpu->clear();
-                object.system->controller->update();
+            if (mandarineObject.system->state == System::State::run) {
+                mandarineObject.system->gpu->clear();
+                mandarineObject.system->controller->update();
                 
-                object.system->emulateFrame();
+                mandarineObject.system->emulateFrame();
             }
             
-            if (object.system->gpu->gp1_08.colorDepth == gpu::GP1_08::ColorDepth::bit24) {
+            if (mandarineObject.system->gpu->gp1_08.colorDepth == gpu::GP1_08::ColorDepth::bit24) {
                 if (auto buffer = [[MandarineEmulator sharedInstance] secondaryVideoCallback])
-                    buffer(object.system->gpu->vram.data(),
-                           object.system->gpu->displayAreaStartX,
-                           object.system->gpu->displayAreaStartY,
-                           object.system->gpu->gp1_08.getHorizontalResoulution(),
-                           object.system->gpu->gp1_08.getVerticalResoulution());
+                    buffer(mandarineObject.system->gpu->vram.data(),
+                           mandarineObject.system->gpu->displayAreaStartX,
+                           mandarineObject.system->gpu->displayAreaStartY,
+                           mandarineObject.system->gpu->gp1_08.getHorizontalResoulution(),
+                           mandarineObject.system->gpu->gp1_08.getVerticalResoulution());
             } else {
                 if (auto buffer = [[MandarineEmulator sharedInstance] videoCallback])
-                    buffer(object.system->gpu->vram.data(),
-                           object.system->gpu->displayAreaStartX,
-                           object.system->gpu->displayAreaStartY,
-                           object.system->gpu->gp1_08.getHorizontalResoulution(),
-                           object.system->gpu->gp1_08.getVerticalResoulution());
+                    buffer(mandarineObject.system->gpu->vram.data(),
+                           mandarineObject.system->gpu->displayAreaStartX,
+                           mandarineObject.system->gpu->displayAreaStartY,
+                           mandarineObject.system->gpu->gp1_08.getHorizontalResoulution(),
+                           mandarineObject.system->gpu->gp1_08.getVerticalResoulution());
             }
             
-            limitFramerate(true, object.system->gpu->isNtsc());
+            limitFramerate(true, mandarineObject.system->gpu->isNtsc());
         }
     });
 }
 
 -(void) stop {
-    object.thread.request_stop();
-    if (object.thread.joinable())
-        object.thread.join();
+    mandarineObject.thread.request_stop();
+    if (mandarineObject.thread.joinable())
+        mandarineObject.thread.join();
     
-    system_tools::saveMemoryCard(object.system, 0, true);
-    system_tools::saveMemoryCard(object.system, 1, true);
+    system_tools::saveMemoryCard(mandarineObject.system, 0, true);
+    system_tools::saveMemoryCard(mandarineObject.system, 1, true);
     
     Sound::close();
     
-    object.paused.store(false);
-    object.running.store(false);
+    mandarineObject.paused.store(false);
+    mandarineObject.running.store(false);
 }
 
 -(void) unpause {
-    object.paused.store(false);
-    object.cv.notify_all();
+    mandarineObject.paused.store(false);
+    mandarineObject.cv.notify_all();
 }
 
 
 -(BOOL) isPaused {
-    return object.paused.load();
+    return mandarineObject.paused.load();
 }
 
 -(BOOL) isRunning {
-    return object.running.load();
+    return mandarineObject.running.load();
 }
 
 
@@ -436,11 +407,11 @@ auto manager = std::make_unique<GCInputManager>();
 
 
 -(void) load:(NSURL *)url NS_SWIFT_NAME(load(state:)) {
-    state::loadFromFile(object.system.get(), [url.path UTF8String]);
+    state::loadFromFile(mandarineObject.system.get(), [url.path UTF8String]);
 }
 
 -(void) save:(NSURL *)url NS_SWIFT_NAME(save(state:)) {
-    state::saveToFile(object.system.get(), [url.path UTF8String]);
+    state::saveToFile(mandarineObject.system.get(), [url.path UTF8String]);
 }
 
 

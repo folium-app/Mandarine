@@ -10,7 +10,7 @@ extern std::string PATH_DATA;  // Read-only directory, distributed with emulator
 extern std::string PATH_USER;  // Writable directory for storing saves, config, etc
 
 inline std::string assetsPath(const char* file = "") { return PATH_DATA + "assets/" + file; }
-inline std::string shaderPath(const char* file = "") { return PATH_DATA + "shader/" + file; }
+inline std::string shaderPath(const char* file = "") { return PATH_DATA + "/shaders/" + file; }
 inline std::string biosPath() { return PATH_USER + "bios/"; }
 inline std::string statePath(const char* file = "") { return PATH_USER + "state/" + file; }
 inline std::string memoryPath(const char* file = "") { return PATH_USER + "memory/" + file; }
