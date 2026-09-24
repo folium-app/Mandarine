@@ -1,5 +1,5 @@
 #pragma once
-#include "device/dma/dma_channel.h"
+#include "avocado/device/dma/dma_channel.h"
 
 namespace spu {
 struct SPU;

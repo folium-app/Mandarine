@@ -1,4 +1,4 @@
-#include "utils/vector.h"
+#include "avocado/utils/vector.h"
 #include <cmath>
 
 vec2::vec2(const ivec2& v) : x(static_cast<float>(v.x)), y(static_cast<float>(v.y)) {}

@@ -2,7 +2,7 @@
 #include <array>
 #include <vector>
 #include <optional>
-#include "device/device.h"
+#include "avocado/device/device.h"
 
 namespace mdec {
 using decodedBlock = std::array<uint32_t, 16 * 16>;

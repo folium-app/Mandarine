@@ -1,4 +1,4 @@
-#include "device/gpu/render/dither.h"
+#include "avocado/device/gpu/render/dither.h"
 
 namespace {
 constexpr int8_t ditherTable[4][4] = {

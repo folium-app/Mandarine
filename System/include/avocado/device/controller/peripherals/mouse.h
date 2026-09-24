@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
-#include "device/controller/peripherals/abstract_device.h"
-#include "device/device.h"
+#include "avocado/device/controller/peripherals/abstract_device.h"
+#include "avocado/device/device.h"
 
 namespace peripherals {
 class Mouse : public AbstractDevice {

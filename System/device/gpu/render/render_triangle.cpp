@@ -1,9 +1,9 @@
-#include "device/gpu/render/render.h"
+#include "avocado/device/gpu/render/render.h"
 #include <algorithm>
-#include "device/gpu/psx_color.h"
-#include "device/gpu/render/dither.h"
-#include "device/gpu/render/texture_utils.h"
-#include "utils/macros.h"
+#include "avocado/device/gpu/psx_color.h"
+#include "avocado/device/gpu/render/dither.h"
+#include "avocado/device/gpu/render/texture_utils.h"
+#include "avocado/utils/macros.h"
 
 #undef VRAM
 #define VRAM ((uint16_t(*)[gpu::VRAM_WIDTH])gpu->vram.data())

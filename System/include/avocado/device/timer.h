@@ -1,6 +1,6 @@
 #pragma once
 #include <cassert>
-#include "device/interrupt.h"
+#include "avocado/device/interrupt.h"
 
 namespace gui::debug {
 class Timers;

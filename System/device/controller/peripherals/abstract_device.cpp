@@ -1,4 +1,4 @@
-#include "device/controller/peripherals/abstract_device.h"
+#include "avocado/device/controller/peripherals/abstract_device.h"
 
 namespace peripherals {
 AbstractDevice::AbstractDevice(Type type, int port) : type(type), port(port) {}

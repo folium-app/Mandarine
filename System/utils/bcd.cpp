@@ -1,4 +1,4 @@
-#include "utils/bcd.h"
+#include "avocado/utils/bcd.h"
 
 namespace bcd {
 uint8_t toBinary(uint8_t bcd) {

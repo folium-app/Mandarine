@@ -1,6 +1,6 @@
-#include "cpu/instructions.h"
+#include "avocado/cpu/instructions.h"
 #include <cstdio>
-#include "system.h"
+#include "avocado/system.h"
 
 using namespace mips;
 

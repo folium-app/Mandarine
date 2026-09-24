@@ -1,5 +1,5 @@
 #pragma once
-#include "device/controller/peripherals/digital_controller.h"
+#include "avocado/device/controller/peripherals/digital_controller.h"
 
 namespace peripherals
 {

@@ -1,4 +1,4 @@
-#include "device/controller/peripherals/none.h"
+#include "avocado/device/controller/peripherals/none.h"
 
 namespace peripherals {
 None::None(int port) : AbstractDevice(Type::None, port) {}

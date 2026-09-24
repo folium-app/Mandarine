@@ -1,6 +1,6 @@
 #pragma once
 #include <cstdint>
-#include "utils/math.h"
+#include "avocado/utils/math.h"
 
 // Basically an overflow safe int16_t
 struct Sample {

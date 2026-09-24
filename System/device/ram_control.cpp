@@ -1,6 +1,6 @@
-#include "device/ram_control.h"
+#include "avocado/device/ram_control.h"
 #include <fmt/core.h>
-#include "config.h"
+#include "avocado/config.h"
 
 RamControl::RamControl() {
     verbose = config.debug.log.memoryControl > 0;

@@ -1,6 +1,6 @@
-#include "disc/disc.h"
+#include "avocado/disc/disc.h"
 #include <fmt/core.h>
-#include "utils/file.h"
+#include "avocado/utils/file.h"
 
 namespace disc {
 SubchannelQ Disc::getSubQ(Position pos) {

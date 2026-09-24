@@ -1,14 +1,14 @@
-#include "system.h"
+#include "avocado/system.h"
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/format-inl.h>
-#include "bios/functions.h"
-#include "config.h"
-#include "sound/sound.h"
-#include "utils/address.h"
-#include "utils/gpu_draw_list.h"
-#include "utils/file.h"
-#include "utils/psx_exe.h"
+#include "avocado/bios/functions.h"
+#include "avocado/config.h"
+#include "avocado/sound/sound.h"
+#include "avocado/utils/address.h"
+#include "avocado/utils/gpu_draw_list.h"
+#include "avocado/utils/file.h"
+#include "avocado/utils/psx_exe.h"
 
 #include <variant>
 #include <vector>
@@ -323,7 +323,7 @@ void System::write(uint32_t address, T value) {
     WRITE_IO32(0x1f801810, 0x1f801818, gpu);
     WRITE_IO32(0x1f801820, 0x1f801828, mdec);
 
-    if (in_range<0xfffe0130, 4>(address) and sizeof(T) not_eq sizeof(uint32_t)) {
+    if (in_range<0xfffe0130, 4>(address) and sizeof(T) == sizeof(uint32_t)) {
         cacheControl->write(0, value);
         return;
     }
@@ -631,9 +631,10 @@ void System::emulateFrame() {
                 auto mode1 = static_cast<modes>(timers.at(1)->mode.syncMode);
                 if (mode1 == modes::resetAtVblank or mode1 == modes::resetAtVblankAndPauseOutside)
                     timers.at(1)->current._reg = 0;
-                else if (mode1 == modes::pauseUntilVblankAndFreerun)
+                else if (mode1 == modes::pauseUntilVblankAndFreerun) {
                     timers.at(1)->paused = false;
                     timers.at(1)->mode.syncEnabled = false;
+                }
             }
         }
         // Handle Timer1 - Reset on VBlank

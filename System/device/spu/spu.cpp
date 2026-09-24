@@ -1,19 +1,19 @@
-#include "device/spu/spu.h"
+#include "avocado/device/spu/spu.h"
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/format-inl.h>
 #include <array>
 #include <functional>
 #include <vector>
-#include "device/cdrom/cdrom.h"
-#include "device/spu/interpolation.h"
-#include "device/spu/reverb.h"
-#include "device/spu/sample.h"
-#include "sound/adpcm.h"
-#include "system.h"
-#include "utils/file.h"
-#include "utils/math.h"
-#include "config.h"
+#include "avocado/device/cdrom/cdrom.h"
+#include "avocado/device/spu/interpolation.h"
+#include "avocado/device/spu/reverb.h"
+#include "avocado/device/spu/sample.h"
+#include "avocado/sound/adpcm.h"
+#include "avocado/system.h"
+#include "avocado/utils/file.h"
+#include "avocado/utils/math.h"
+#include "avocado/config.h"
 
 using namespace spu;
 

@@ -2,10 +2,10 @@
 #include <cstddef>
 #include <cstdint>
 #include <vector>
-#include "cpu/gte/command.h"
-#include "device/device.h"
-#include "cpu/gte/math.h"
-#include "utils/logic.h"
+#include "avocado/cpu/gte/command.h"
+#include "avocado/device/device.h"
+#include "avocado/cpu/gte/math.h"
+#include "avocado/utils/logic.h"
 
 namespace gui::debug
 {

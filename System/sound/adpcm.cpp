@@ -1,6 +1,6 @@
-#include "sound/adpcm.h"
+#include "avocado/sound/adpcm.h"
 #include <cassert>
-#include "sound/tables.h"
+#include "avocado/sound/tables.h"
 
 namespace ADPCM {
 int filterTablePos[5] = {0, 60, 115, 98, 122};

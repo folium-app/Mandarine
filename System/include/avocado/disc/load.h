@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include <string>
-#include "disc/disc.h"
+#include "avocado/disc/disc.h"
 
 namespace disc {
 bool isDiscImage(const std::string& path);

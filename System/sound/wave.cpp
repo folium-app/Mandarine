@@ -1,4 +1,4 @@
-#include "sound/wave.h"
+#include "avocado/sound/wave.h"
 #include <cstring>
 #include <cstdio> // for FILE, fwrite, fclose
 

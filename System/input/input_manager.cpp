@@ -1,4 +1,4 @@
-#include "input/input_manager.h"
+#include "avocado/input/input_manager.h"
 
 InputManager* InputManager::_instance = nullptr;
 

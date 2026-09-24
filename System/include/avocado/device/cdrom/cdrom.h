@@ -2,8 +2,8 @@
 #include <cassert>
 #include <deque>
 #include <memory>
-#include "disc/disc.h"
-#include "device/cdrom/fifo.h"
+#include "avocado/disc/disc.h"
+#include "avocado/device/cdrom/fifo.h"
 
 struct System;
 

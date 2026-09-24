@@ -1,10 +1,10 @@
-#include "utils/psf.h"
+#include "avocado/utils/psf.h"
 #include <fmt/core.h>
 #include <cstring>
 #include <sstream>
-#include <miniz.h>
-#include "utils/file.h"
-#include "utils/psx_exe.h"
+#include "miniz/miniz.h"
+#include "avocado/utils/file.h"
+#include "avocado/utils/psx_exe.h"
 
 namespace {
 uint32_t read_u32(const std::vector<uint8_t>& vec, size_t offset) {

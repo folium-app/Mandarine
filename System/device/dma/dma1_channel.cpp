@@ -1,5 +1,5 @@
-#include "device/dma/dma1_channel.h"
-#include "device/mdec/mdec.h"
+#include "avocado/device/dma/dma1_channel.h"
+#include "avocado/device/mdec/mdec.h"
 
 namespace device::dma {
 DMA1Channel::DMA1Channel(Channel channel, System* sys, mdec::MDEC* mdec) : DMAChannel(channel, sys), mdec(mdec) {}

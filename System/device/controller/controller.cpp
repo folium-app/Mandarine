@@ -1,11 +1,11 @@
-#include "device/controller/controller.h"
-#include "config.h"
-#include "device/controller/peripherals/analog_controller.h"
-#include "device/controller/peripherals/digital_controller.h"
-#include "device/controller/peripherals/mouse.h"
-#include "device/controller/peripherals/none.h"
-#include "system.h"
-#include "utils/event.h"
+#include "avocado/device/controller/controller.h"
+#include "avocado/config.h"
+#include "avocado/device/controller/peripherals/analog_controller.h"
+#include "avocado/device/controller/peripherals/digital_controller.h"
+#include "avocado/device/controller/peripherals/mouse.h"
+#include "avocado/device/controller/peripherals/none.h"
+#include "avocado/system.h"
+#include "avocado/utils/event.h"
 
 namespace device
 {

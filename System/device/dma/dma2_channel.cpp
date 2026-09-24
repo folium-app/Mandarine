@@ -1,5 +1,5 @@
-#include "device/dma/dma2_channel.h"
-#include "device/gpu/gpu.h"
+#include "avocado/device/dma/dma2_channel.h"
+#include "avocado/device/gpu/gpu.h"
 
 namespace device::dma {
 DMA2Channel::DMA2Channel(Channel channel, System *sys, gpu::GPU *gpu) : DMAChannel(channel, sys), gpu(gpu) {}

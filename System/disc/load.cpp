@@ -1,9 +1,9 @@
-#include "disc/load.h"
+#include "avocado/disc/load.h"
 #include <array>
-#include "disc/format/ecm_parser.h"
-#include "disc/format/chd_format.h"
-#include "disc/format/cue_parser.h"
-#include "utils/file.h"
+#include "avocado/disc/format/ecm_parser.h"
+#include "avocado/disc/format/chd_format.h"
+#include "avocado/disc/format/cue_parser.h"
+#include "avocado/utils/file.h"
 
 namespace disc {
 const std::array<std::string, 6> discFormats = {"chd", "cue", "iso", "bin", "img", "ecm"};

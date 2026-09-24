@@ -1,9 +1,9 @@
-#include "disc/format/cue_parser.h"
+#include "avocado/disc/format/cue_parser.h"
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/format-inl.h>
 #include <sstream>
-#include "utils/file.h"
+#include "avocado/utils/file.h"
 
 namespace disc {
 namespace format {

@@ -1,7 +1,7 @@
-#include "device/controller/peripherals/memory_card.h"
+#include "avocado/device/controller/peripherals/memory_card.h"
 #include <fmt/core.h>
-#include "config.h"
-#include "utils/event.h"
+#include "avocado/config.h"
+#include "avocado/utils/event.h"
 
 namespace peripherals
 {

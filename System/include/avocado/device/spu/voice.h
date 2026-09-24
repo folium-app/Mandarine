@@ -1,8 +1,8 @@
 #pragma once
 #include <vector>
-#include "device/spu/adsr.h"
-#include "device/device.h"
-#include "device/spu/regs.h"
+#include "avocado/device/spu/adsr.h"
+#include "avocado/device/device.h"
+#include "avocado/device/spu/regs.h"
 
 namespace spu {
 struct Voice {

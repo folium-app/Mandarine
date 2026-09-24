@@ -1,6 +1,6 @@
-#include "device/dma/dma3_channel.h"
-#include "device/cdrom/cdrom.h"
-#include "utils/file.h"
+#include "avocado/device/dma/dma3_channel.h"
+#include "avocado/device/cdrom/cdrom.h"
+#include "avocado/utils/file.h"
 
 namespace device::dma {
 uint32_t DMA3Channel::readDevice() {

@@ -1,7 +1,7 @@
 #include <tuple>
-#include "device/mdec/mdec.h"
-#include "utils/logic.h"
-#include "utils/math.h"
+#include "avocado/device/mdec/mdec.h"
+#include "avocado/utils/logic.h"
+#include "avocado/utils/math.h"
 
 namespace mdec {
 std::array<int16_t, 64> crblk = {{0}};

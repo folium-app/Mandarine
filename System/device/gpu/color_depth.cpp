@@ -1,4 +1,4 @@
-#include "device/gpu/color_depth.h"
+#include "avocado/device/gpu/color_depth.h"
 
 ColorDepth bitsToDepth(int bits) {
     switch (bits) {

@@ -1,8 +1,8 @@
-#include "device/dma/dma_channel.h"
+#include "avocado/device/dma/dma_channel.h"
 #include <fmt/core.h>
-#include <magic_enum/magic_enum.hpp>
-#include "config.h"
-#include "system.h"
+#include <magic_enum.hpp>
+#include "avocado/config.h"
+#include "avocado/system.h"
 #include <unordered_set>
 
 namespace device::dma {

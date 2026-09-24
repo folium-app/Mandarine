@@ -1,9 +1,9 @@
 #pragma once
 #include <string>
 #include <unordered_map>
-#include "device/controller/controller_type.h"
-#include "device/gpu/rendering_mode.h"
-#include "utils/event.h"
+#include "avocado/device/controller/controller_type.h"
+#include "avocado/device/gpu/rendering_mode.h"
+#include "avocado/utils/event.h"
 
 namespace avocado {
 extern std::string PATH_DATA;  // Read-only directory, distributed with emulator

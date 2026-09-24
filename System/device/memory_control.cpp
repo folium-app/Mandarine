@@ -1,6 +1,6 @@
-#include "device/memory_control.h"
+#include "avocado/device/memory_control.h"
 #include <fmt/core.h>
-#include "config.h"
+#include "avocado/config.h"
 
 MemoryControl::MemoryControl() {
     verbose = config.debug.log.memoryControl > 0;

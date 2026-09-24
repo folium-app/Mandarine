@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include "device/dma/dma_channel.h"
+#include "avocado/device/dma/dma_channel.h"
 
 struct System;
 

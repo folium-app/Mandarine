@@ -1,6 +1,6 @@
-#include "cpu/gte/gte.h"
-#include "config.h"
-#include "utils/event.h"
+#include "avocado/cpu/gte/gte.h"
+#include "avocado/config.h"
+#include "avocado/utils/event.h"
 
 GTE::GTE() : unrTable(generateUnrTable())
 {

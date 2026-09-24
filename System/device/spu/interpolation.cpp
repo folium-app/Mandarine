@@ -1,4 +1,4 @@
-#include "device/spu/interpolation.h"
+#include "avocado/device/spu/interpolation.h"
 #include <cstdlib>
 namespace {
 std::array<int16_t, 0x200> gauss = {

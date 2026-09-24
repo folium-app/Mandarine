@@ -1,7 +1,7 @@
-#include "cpu/cpu.h"
-#include "bios/functions.h"
-#include "cpu/instructions.h"
-#include "system.h"
+#include "avocado/cpu/cpu.h"
+#include "avocado/bios/functions.h"
+#include "avocado/cpu/instructions.h"
+#include "avocado/system.h"
 
 namespace mips {
 CPU::CPU(System* sys) : sys(sys) {

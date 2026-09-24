@@ -4,10 +4,10 @@
 #include <optional>
 #include <unordered_map>
 #include <vector>
-#include "disc/disc.h"
-#include "disc/position.h"
-#include "disc/track.h"
-#include "utils/file.h"
+#include "avocado/disc/disc.h"
+#include "avocado/disc/position.h"
+#include "avocado/disc/track.h"
+#include "avocado/utils/file.h"
 
 namespace disc {
 namespace format {

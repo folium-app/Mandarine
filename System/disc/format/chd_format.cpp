@@ -1,8 +1,8 @@
-#include "disc/format/chd_format.h"
+#include "avocado/disc/format/chd_format.h"
 #include <fmt/core.h>
 #include <cstring>
-#include "disc/track.h"
-#include "utils/file.h"
+#include "avocado/disc/track.h"
+#include "avocado/utils/file.h"
 
 namespace disc {
 namespace format {

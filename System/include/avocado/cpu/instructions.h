@@ -1,8 +1,8 @@
 #pragma once
 #include <array>
 #include <cstdint>
-#include "cpu/cpu.h"
-#include "cpu/opcode.h"
+#include "avocado/cpu/cpu.h"
+#include "avocado/cpu/opcode.h"
 
 namespace instructions {
 using namespace mips;

@@ -1,5 +1,5 @@
-#include "device/expansion2.h"
-#include "config.h"
+#include "avocado/device/expansion2.h"
+#include "avocado/config.h"
 #include <cstdio>
 
 Expansion2::Expansion2() { reset(); }

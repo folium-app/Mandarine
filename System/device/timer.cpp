@@ -1,6 +1,6 @@
-#include "device/timer.h"
+#include "avocado/device/timer.h"
 #include <fmt/core.h>
-#include "system.h"
+#include "avocado/system.h"
 
 namespace device::timer {
 

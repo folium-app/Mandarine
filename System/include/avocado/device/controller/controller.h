@@ -6,8 +6,8 @@
 #include <array>
 #include <memory>
 #include <string>
-#include "device/device.h"
-#include "device/controller/peripherals/memory_card.h"
+#include "avocado/device/device.h"
+#include "avocado/device/controller/peripherals/memory_card.h"
 
 struct System;
 

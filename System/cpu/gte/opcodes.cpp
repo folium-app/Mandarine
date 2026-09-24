@@ -1,4 +1,4 @@
-#include "cpu/gte/gte.h"
+#include "avocado/cpu/gte/gte.h"
 
 using gte::Matrix;
 using gte::toVector;

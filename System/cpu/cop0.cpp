@@ -1,4 +1,4 @@
-#include "cpu/cop0.h"
+#include "avocado/cpu/cop0.h"
 
 std::pair<uint32_t, bool> COP0::read(int reg) {
     uint32_t value = 0;

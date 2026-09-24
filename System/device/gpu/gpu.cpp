@@ -1,14 +1,14 @@
-#include "device/gpu/gpu.h"
+#include "avocado/device/gpu/gpu.h"
 #include <fmt/core.h>
 #include <cassert>
-#include "config.h"
-#include "device/gpu/render/render.h"
-#include "system.h"
-#include "utils/file.h"
-#include "utils/logic.h"
-#include "utils/macros.h"
-#include "utils/timing.h"
-#include "utils/event.h"
+#include "avocado/config.h"
+#include "avocado/device/gpu/render/render.h"
+#include "avocado/system.h"
+#include "avocado/utils/file.h"
+#include "avocado/utils/logic.h"
+#include "avocado/utils/macros.h"
+#include "avocado/utils/timing.h"
+#include "avocado/utils/event.h"
 
 // For vram dump
 #include <stb_image_write.h>

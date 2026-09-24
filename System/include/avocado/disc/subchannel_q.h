@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
-#include "disc/position.h"
-#include "utils/bcd.h"
+#include "avocado/disc/position.h"
+#include "avocado/utils/bcd.h"
 
 namespace disc {
 struct SubchannelQ {

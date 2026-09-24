@@ -1,4 +1,4 @@
-#include "device/spu/noise.h"
+#include "avocado/device/spu/noise.h"
 #include <array>
 
 namespace {

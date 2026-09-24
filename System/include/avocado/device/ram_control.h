@@ -1,5 +1,5 @@
 #pragma once
-#include "device/device.h"
+#include "avocado/device/device.h"
 
 class RamControl {
     bool verbose = false;

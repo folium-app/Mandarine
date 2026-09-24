@@ -1,6 +1,6 @@
 #pragma once
 #include <array>
-#include "device/controller/peripherals/abstract_device.h"
+#include "avocado/device/controller/peripherals/abstract_device.h"
 
 namespace peripherals {
 struct MemoryCard : public AbstractDevice {

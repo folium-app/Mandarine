@@ -1,5 +1,5 @@
-#include "device/cache_control.h"
-#include "system.h"
+#include "avocado/device/cache_control.h"
+#include "avocado/system.h"
 
 CacheControl::CacheControl(System* sys) : sys(sys) { reset(); }
 

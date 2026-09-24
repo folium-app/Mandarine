@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <type_traits>
-#include "utils/macros.h"
+#include "avocado/utils/macros.h"
 
 template <typename T>
 INLINE constexpr uint32_t align_mips(uint32_t address) {

@@ -1,9 +1,9 @@
-#include "device/controller/peripherals/digital_controller.h"
+#include "avocado/device/controller/peripherals/digital_controller.h"
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/format-inl.h>
-#include "config.h"
-#include "input/input_manager.h"
+#include "avocado/config.h"
+#include "avocado/input/input_manager.h"
 
 namespace peripherals {
 void DigitalController::ButtonState::setByName(const std::string& name, bool value) {

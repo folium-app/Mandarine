@@ -1,8 +1,8 @@
-#include "device/spu/voice.h"
+#include "avocado/device/spu/voice.h"
 #include <algorithm>
 #include <cmath>
-#include "sound/adpcm.h"
-#include "utils/math.h"
+#include "avocado/sound/adpcm.h"
+#include "avocado/utils/math.h"
 
 namespace spu {
 Voice::Voice() {

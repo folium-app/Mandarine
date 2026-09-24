@@ -1,8 +1,8 @@
 #pragma once
 #include <cstdint>
-#include "device/gpu/semi_transparency.h"
-#include "utils/macros.h"
-#include "utils/math.h"
+#include "avocado/device/gpu/semi_transparency.h"
+#include "avocado/utils/macros.h"
+#include "avocado/utils/math.h"
 
 #undef RGB // Some header is adding this macro on Windows
 // Union for storing 24bit color (used in GPU commands)

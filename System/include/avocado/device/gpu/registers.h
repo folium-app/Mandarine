@@ -1,6 +1,6 @@
 #pragma once
-#include "device/device.h"
-#include "device/gpu/semi_transparency.h"
+#include "avocado/device/device.h"
+#include "avocado/device/gpu/semi_transparency.h"
 
 namespace gpu {
 

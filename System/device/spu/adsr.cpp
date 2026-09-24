@@ -1,4 +1,4 @@
-#include "device/spu/adsr.h"
+#include "avocado/device/spu/adsr.h"
 
 namespace spu {
 

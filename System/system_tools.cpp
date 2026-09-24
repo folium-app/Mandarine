@@ -1,17 +1,17 @@
-#include "system_tools.h"
+#include "avocado/system_tools.h"
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/format-inl.h>
-#include "config.h"
-#include "disc/load.h"
-#include "sound/sound.h"
-#include "state/state.h"
-#include "system.h"
-#include "memory_card/card_formats.h"
-#include "utils/file.h"
-#include "utils/gpu_draw_list.h"
-#include "utils/psf.h"
-#include "utils/event.h"
+#include "avocado/config.h"
+#include "avocado/disc/load.h"
+#include "avocado/sound/sound.h"
+#include "avocado/state/state.h"
+#include "avocado/system.h"
+#include "avocado/memory_card/card_formats.h"
+#include "avocado/utils/file.h"
+#include "avocado/utils/gpu_draw_list.h"
+#include "avocado/utils/psf.h"
+#include "avocado/utils/event.h"
 
 namespace system_tools
 {
@@ -99,12 +99,12 @@ namespace system_tools
             sys->cdrom->setShell(true);
             sys->cdrom->disc = std::move(disc);
             sys->cdrom->setShell(false);
-            fmt::print("{}", "loaded");
+            fmt::print("{}\n", "loaded");
             toast(fmt::format("{} loaded", filenameExt));
         }
         else
         {
-            fmt::print("{}", "cannot load");
+            fmt::print("{}\n", "cannot load");
             toast(fmt::format("Cannot load {}", filenameExt));
         }
     }

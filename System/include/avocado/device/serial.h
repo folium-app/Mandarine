@@ -1,5 +1,5 @@
 #pragma once
-#include "device/device.h"
+#include "avocado/device/device.h"
 
 class Serial {
     static const uint32_t BASE_ADDRESS = 0x1F801050;

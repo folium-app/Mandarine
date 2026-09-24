@@ -1,9 +1,9 @@
 #pragma once
 #include <cmath>
 #include <utility>
-#include "device/gpu/semi_transparency.h"
-#include "device/gpu/psx_color.h"
-#include "utils/vector.h"
+#include "avocado/device/gpu/semi_transparency.h"
+#include "avocado/device/gpu/psx_color.h"
+#include "avocado/utils/vector.h"
 
 namespace primitive {
 struct Rect {

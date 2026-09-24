@@ -1,5 +1,5 @@
 #pragma once
-#include "system.h"
+#include "avocado/system.h"
 
 enum class PsfType { Main, MainLib, SecondaryLib };
 

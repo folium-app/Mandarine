@@ -1,5 +1,5 @@
-#include "memory_card/card_formats.h"
-#include "utils/file.h"
+#include "avocado/memory_card/card_formats.h"
+#include "avocado/utils/file.h"
 #include <fmt/core.h>
 #include <algorithm>
 

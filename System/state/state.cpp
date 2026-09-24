@@ -1,4 +1,4 @@
-#include "state/state.h"
+#include "avocado/state/state.h"
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/format-inl.h>
@@ -11,10 +11,10 @@
 #include <chrono>
 #include <deque>
 #include <sstream>
-#include "config.h"
-#include "disc/load.h"
-#include "system.h"
-#include "utils/file.h"
+#include "avocado/config.h"
+#include "avocado/disc/load.h"
+#include "avocado/system.h"
+#include "avocado/utils/file.h"
 
 using namespace std::chrono_literals;
 

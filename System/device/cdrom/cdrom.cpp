@@ -1,15 +1,15 @@
-#include "device/cdrom/cdrom.h"
+#include "avocado/device/cdrom/cdrom.h"
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/format-inl.h>
 #include <cassert>
-#include "disc/track.h"
-#include "config.h"
-#include "disc/empty.h"
-#include "sound/adpcm.h"
-#include "system.h"
-#include "utils/bcd.h"
-#include "utils/cd.h"
+#include "avocado/disc/track.h"
+#include "avocado/config.h"
+#include "avocado/disc/empty.h"
+#include "avocado/sound/adpcm.h"
+#include "avocado/system.h"
+#include "avocado/utils/bcd.h"
+#include "avocado/utils/cd.h"
 
 namespace device {
 namespace cdrom {

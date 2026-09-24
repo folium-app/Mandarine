@@ -1,8 +1,8 @@
-#include "device/mdec/mdec.h"
+#include "avocado/device/mdec/mdec.h"
 #include <fmt/core.h>
 #include <cassert>
-#include "config.h"
-#include "device/gpu/psx_color.h"
+#include "avocado/config.h"
+#include "avocado/device/gpu/psx_color.h"
 
 namespace mdec {
 

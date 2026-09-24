@@ -1,4 +1,4 @@
-#include "device/gpu/psx_color.h"
+#include "avocado/device/gpu/psx_color.h"
 
 RGB operator*(const RGB& lhs, const float rhs) {
     RGB c;

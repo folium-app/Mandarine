@@ -1,7 +1,7 @@
 #pragma once
 #include <optional>
-#include "disc/position.h"
-#include "disc/disc.h"
+#include "avocado/disc/position.h"
+#include "avocado/disc/disc.h"
 
 namespace disc {
 struct Track {

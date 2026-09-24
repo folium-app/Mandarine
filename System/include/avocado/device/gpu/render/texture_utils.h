@@ -1,8 +1,8 @@
 #pragma once
-#include "device/gpu/gpu.h"
-#include "utils/macros.h"
-#include "device/gpu/color_depth.h"
-#include "device/gpu/primitive.h"
+#include "avocado/device/gpu/gpu.h"
+#include "avocado/utils/macros.h"
+#include "avocado/device/gpu/color_depth.h"
+#include "avocado/device/gpu/primitive.h"
 
 #define gpuVRAM ((uint16_t(*)[gpu::VRAM_WIDTH])gpu->vram.data())
 

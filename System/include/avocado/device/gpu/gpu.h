@@ -1,10 +1,10 @@
 #pragma once
 #include <array>
 #include <vector>
-#include "device/gpu/color_depth.h"
-#include "device/gpu/primitive.h"
-#include "device/gpu/psx_color.h"
-#include "device/gpu/registers.h"
+#include "avocado/device/gpu/color_depth.h"
+#include "avocado/device/gpu/primitive.h"
+#include "avocado/device/gpu/psx_color.h"
+#include "avocado/device/gpu/registers.h"
 
 #define VRAM ((uint16_t (*)[VRAM_WIDTH])vram.data())
 

@@ -1,10 +1,10 @@
 #pragma once
 #include <cstdint>
 #include <unordered_map>
-#include "cpu/cop0.h"
-#include "cpu/gte/gte.h"
-#include "cpu/opcode.h"
-#include "utils/macros.h"
+#include "avocado/cpu/cop0.h"
+#include "avocado/cpu/gte/gte.h"
+#include "avocado/cpu/opcode.h"
+#include "avocado/utils/macros.h"
 
 struct System;
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "device/gpu/gpu.h"
+#include "avocado/device/gpu/gpu.h"
 
 class Render {
    public:

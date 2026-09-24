@@ -1,7 +1,7 @@
-#include "device/dma/dma6_channel.h"
+#include "avocado/device/dma/dma6_channel.h"
 #include <fmt/core.h>
-#include <magic_enum/magic_enum.hpp>
-#include "system.h"
+#include <magic_enum.hpp>
+#include "avocado/system.h"
 
 namespace device::dma {
 DMA6Channel::DMA6Channel(Channel channel, System* sys) : DMAChannel(channel, sys) {}

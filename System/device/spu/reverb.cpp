@@ -1,9 +1,9 @@
-#include "device/spu/reverb.h"
+#include "avocado/device/spu/reverb.h"
 #include <vector>
-#include "device/spu/adsr.h"
-#include "device/spu/sample.h"
-#include "device/device.h"
-#include "utils/math.h"
+#include "avocado/device/spu/adsr.h"
+#include "avocado/device/spu/sample.h"
+#include "avocado/device/device.h"
+#include "avocado/utils/math.h"
 
 namespace spu {
 uint32_t wrap(SPU* spu, uint32_t address) {

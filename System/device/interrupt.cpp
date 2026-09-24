@@ -1,5 +1,5 @@
-#include "device/interrupt.h"
-#include "system.h"
+#include "avocado/device/interrupt.h"
+#include "avocado/system.h"
 
 using namespace interrupt;
 

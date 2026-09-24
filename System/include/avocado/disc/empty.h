@@ -1,5 +1,5 @@
 #pragma once
-#include "disc/disc.h"
+#include "avocado/disc/disc.h"
 
 namespace disc {
 

@@ -1,4 +1,4 @@
-#include "device/serial.h"
+#include "avocado/device/serial.h"
 #include <fmt/core.h>
 
 Serial::Serial() { reset(); }

@@ -1,8 +1,8 @@
 #pragma once
 #include <memory>
 #include <chd.h>
-#include "disc/disc.h"
-#include "disc/track.h"
+#include "avocado/disc/disc.h"
+#include "avocado/disc/track.h"
 
 namespace disc {
 namespace format {

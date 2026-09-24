@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include "device/device.h"
+#include "avocado/device/device.h"
 
 struct COP0 {
     // cop0r7 DCIC - breakpoint control

@@ -1,9 +1,9 @@
 #pragma once
 #include <array>
-#include "device/device.h"
-#include "device/spu/noise.h"
-#include "device/spu/regs.h"
-#include "device/spu/voice.h"
+#include "avocado/device/device.h"
+#include "avocado/device/spu/noise.h"
+#include "avocado/device/spu/regs.h"
+#include "avocado/device/spu/voice.h"
 
 struct System;
 

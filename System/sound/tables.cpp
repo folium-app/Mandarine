@@ -1,4 +1,4 @@
-#include "sound/tables.h"
+#include "avocado/sound/tables.h"
 
 namespace ADPCM {
 int16_t zigzagTables[7][29] = {

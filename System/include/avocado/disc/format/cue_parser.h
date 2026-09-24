@@ -2,8 +2,8 @@
 #include <memory>
 #include <optional>
 #include <regex>
-#include "disc/format/cue.h"
-#include "disc/track.h"
+#include "avocado/disc/format/cue.h"
+#include "avocado/disc/track.h"
 
 namespace disc {
     namespace format{

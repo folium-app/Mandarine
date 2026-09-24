@@ -1,5 +1,5 @@
-#include "device/dma/dma4_channel.h"
-#include "device/spu/spu.h"
+#include "avocado/device/dma/dma4_channel.h"
+#include "avocado/device/spu/spu.h"
 
 namespace device::dma {
 DMA4Channel::DMA4Channel(Channel channel, System *sys, spu::SPU *spu) : DMAChannel(channel, sys), spu(spu) {}

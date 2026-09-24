@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <fmt/core.h>
-#include "device/cdrom/cdrom.h"
-#include "utils/bcd.h"
+#include "avocado/device/cdrom/cdrom.h"
+#include "avocado/utils/bcd.h"
 
 namespace device {
 namespace cdrom {

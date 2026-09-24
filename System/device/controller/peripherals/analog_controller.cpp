@@ -1,9 +1,9 @@
-#include "device/controller/peripherals/analog_controller.h"
+#include "avocado/device/controller/peripherals/analog_controller.h"
 #include <fmt/core.h>
-#include <magic_enum/magic_enum.hpp>
-#include "config.h"
-#include "input/input_manager.h"
-#include "utils/event.h"
+#include <magic_enum.hpp>
+#include "avocado/config.h"
+#include "avocado/input/input_manager.h"
+#include "avocado/utils/event.h"
 
 namespace peripherals
 {
