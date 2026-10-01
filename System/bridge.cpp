@@ -527,3 +527,298 @@ void mandarine::set_setting(mandarine::SETTING setting, bool value) {
             break;
     }
 }
+
+
+namespace chd_reader {
+static void set_error(
+                      CHDReader *reader,
+                      const char *message
+                      ) {
+    if (!reader) {
+        return;
+    }
+    
+    snprintf(
+             reader->error,
+             sizeof(reader->error),
+             "%s",
+             message ? message : "Unknown CHD error"
+             );
+}
+
+CHDReader *chd_reader_open(const char *path)
+{
+    if (!path) {
+        return NULL;
+    }
+    
+    CHDReader *reader =
+    (CHDReader *)calloc(1, sizeof(CHDReader));
+    
+    if (!reader) {
+        return NULL;
+    }
+    
+    chd_error error = chd_open(
+                               path,
+                               CHD_OPEN_READ,
+                               NULL,
+                               &reader->chd
+                               );
+    
+    if (error != CHDERR_NONE) {
+        set_error(
+                  reader,
+                  chd_error_string(error)
+                  );
+        
+        free(reader);
+        return NULL;
+    }
+    
+    const chd_header *header =
+    chd_get_header(reader->chd);
+    
+    if (!header) {
+        set_error(reader, "Unable to read CHD header");
+        chd_close(reader->chd);
+        free(reader);
+        return NULL;
+    }
+    
+    reader->hunkBytes = header->hunkbytes;
+    
+    /*
+     * PlayStation CD-ROM data normally uses:
+     *
+     * 2352 bytes/frame
+     *
+     * Some CHDs contain:
+     *
+     * 2448 bytes/frame
+     *
+     * where the additional 96 bytes are subchannel data.
+     *
+     * libchdr exposes unitbytes specifically for this.
+     */
+    if (header->unitbytes == 2352 ||
+        header->unitbytes == 2448) {
+        
+        reader->frameBytes = header->unitbytes;
+        
+    } else if (
+               header->hunkbytes % 2448 == 0
+               ) {
+                   
+                   reader->frameBytes = 2448;
+                   
+               } else if (
+                          header->hunkbytes % 2352 == 0
+                          ) {
+                              
+                              reader->frameBytes = 2352;
+                              
+                          } else {
+                              
+                              set_error(
+                                        reader,
+                                        "Unsupported CHD CD frame size"
+                                        );
+                              
+                              chd_close(reader->chd);
+                              free(reader);
+                              return NULL;
+                          }
+    
+    reader->hunkBuffer =
+    (uint8_t *)malloc(reader->hunkBytes);
+    
+    if (!reader->hunkBuffer) {
+        set_error(reader, "Unable to allocate CHD hunk buffer");
+        
+        chd_close(reader->chd);
+        free(reader);
+        return NULL;
+    }
+    
+    reader->hasCachedHunk = 0;
+    
+    return reader;
+}
+
+void chd_reader_close(CHDReader *reader)
+{
+    if (!reader) {
+        return;
+    }
+    
+    if (reader->chd) {
+        chd_close(reader->chd);
+    }
+    
+    free(reader->hunkBuffer);
+    free(reader);
+}
+
+uint64_t chd_reader_logical_bytes(CHDReader *reader)
+{
+    if (!reader || !reader->chd) {
+        return 0;
+    }
+    
+    const chd_header *header =
+    chd_get_header(reader->chd);
+    
+    if (!header) {
+        return 0;
+    }
+    
+    return header->logicalbytes;
+}
+
+uint32_t chd_reader_frame_bytes(CHDReader *reader)
+{
+    if (!reader) {
+        return 0;
+    }
+    
+    return reader->frameBytes;
+}
+
+int chd_reader_read_frame(
+                          CHDReader *reader,
+                          uint32_t frame,
+                          uint8_t *output
+                          ) {
+    if (!reader ||
+        !reader->chd ||
+        !output) {
+        
+        return 0;
+    }
+    
+    const uint64_t byteOffset =
+    (uint64_t)frame * reader->frameBytes;
+    
+    const uint32_t hunk =
+    (uint32_t)(
+               byteOffset / reader->hunkBytes
+               );
+    
+    const uint32_t offset =
+    (uint32_t)(
+               byteOffset % reader->hunkBytes
+               );
+    
+    /*
+     * A CD frame should never cross a CHD hunk boundary
+     * for normal CHDs, but handle it anyway.
+     */
+    if (offset + reader->frameBytes <= reader->hunkBytes) {
+        
+        if (!reader->hasCachedHunk ||
+            reader->cachedHunk != hunk) {
+            
+            chd_error error =
+            chd_read(
+                     reader->chd,
+                     hunk,
+                     reader->hunkBuffer
+                     );
+            
+            if (error != CHDERR_NONE) {
+                set_error(
+                          reader,
+                          chd_error_string(error)
+                          );
+                
+                return 0;
+            }
+            
+            reader->cachedHunk = hunk;
+            reader->hasCachedHunk = 1;
+        }
+        
+        memcpy(
+               output,
+               reader->hunkBuffer + offset,
+               reader->frameBytes
+               );
+        
+        return 1;
+    }
+    
+    /*
+     * Frame crosses a hunk boundary.
+     */
+    uint32_t firstBytes =
+    reader->hunkBytes - offset;
+    
+    uint32_t secondBytes =
+    reader->frameBytes - firstBytes;
+    
+    if (!reader->hasCachedHunk ||
+        reader->cachedHunk != hunk) {
+        
+        chd_error error =
+        chd_read(
+                 reader->chd,
+                 hunk,
+                 reader->hunkBuffer
+                 );
+        
+        if (error != CHDERR_NONE) {
+            set_error(
+                      reader,
+                      chd_error_string(error)
+                      );
+            
+            return 0;
+        }
+        
+        reader->cachedHunk = hunk;
+        reader->hasCachedHunk = 1;
+    }
+    
+    memcpy(
+           output,
+           reader->hunkBuffer + offset,
+           firstBytes
+           );
+    
+    chd_error error =
+    chd_read(
+             reader->chd,
+             hunk + 1,
+             reader->hunkBuffer
+             );
+    
+    if (error != CHDERR_NONE) {
+        set_error(
+                  reader,
+                  chd_error_string(error)
+                  );
+        
+        return 0;
+    }
+    
+    memcpy(
+           output + firstBytes,
+           reader->hunkBuffer,
+           secondBytes
+           );
+    
+    reader->cachedHunk = hunk + 1;
+    
+    return 1;
+}
+
+const char *chd_reader_error(CHDReader *reader)
+{
+    if (!reader) {
+        return "Invalid CHD reader";
+    }
+    
+    return reader->error;
+}
+}

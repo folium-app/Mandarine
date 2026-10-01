@@ -169,13 +169,13 @@ constexpr void System::write_peripheral(Peripheral& peripheral, uint32_t address
     if constexpr (std::is_same_v<T, uint8_t>) {
         peripheral->write(address, value);
     } else if constexpr (std::is_same_v<T, uint16_t>) {
-        peripheral->write(address, static_cast<uint8_t>(value bitand 0xFF));
-        peripheral->write(address + 1, static_cast<uint8_t>(value >> 8));
+        peripheral->write(address, static_cast<uint16_t>(value) bitand 0xFF);
+        peripheral->write(address + 1, (static_cast<uint16_t>(value) >> 8) bitand 0xFF);
     } else if constexpr (std::is_same_v<T, uint32_t>) {
-        peripheral->write(address, static_cast<uint8_t>(value bitand 0xFF));
-        peripheral->write(address + 1, static_cast<uint8_t>((value >> 8) bitand 0xFF));
-        peripheral->write(address + 2, static_cast<uint8_t>((value >> 16) bitand 0xFF));
-        peripheral->write(address + 3, static_cast<uint8_t>((value >> 24) bitand 0xFF));
+        peripheral->write(address, static_cast<uint32_t>(value) bitand 0xFF);
+        peripheral->write(address + 1, (static_cast<uint32_t>(value) >> 8) bitand 0xFF);
+        peripheral->write(address + 2, (static_cast<uint32_t>(value) >> 16) bitand 0xFF);
+        peripheral->write(address + 3, (static_cast<uint32_t>(value) >> 24) bitand 0xFF);
     }
 }
 
@@ -240,9 +240,8 @@ T System::read(uint32_t address) {
     READ_IO32(0x1f801810, 0x1f801818, gpu);
     READ_IO32(0x1f801820, 0x1f801828, mdec);
 
-    if (in_range<0xfffe0130, 4>(address) and sizeof(T) == sizeof(uint32_t)) {
+    if (in_range<0xfffe0130, 4>(address) and sizeof(T) == sizeof(uint32_t))
         return cacheControl->read(0);
-    }
 
     // Gran Tursimo 2
     if (in_range<0x1f801130, 16>(address) and sizeof(T) == sizeof(uint16_t))

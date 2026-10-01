@@ -71,3 +71,50 @@ enum class SETTING {
 
 void set_setting(SETTING, bool);
 }
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <chd.h>
+
+namespace chd_reader {
+struct CHDReader {
+    chd_file *chd;
+    
+    uint8_t *hunkBuffer;
+    uint32_t hunkBytes;
+    
+    uint32_t frameBytes;
+    
+    uint32_t cachedHunk;
+    int hasCachedHunk;
+    
+    char error[256];
+};
+
+/// Opens a CHD file for reading.
+CHDReader *chd_reader_open(const char *path);
+
+/// Closes a CHD reader.
+void chd_reader_close(CHDReader *reader);
+
+/// Returns the logical size of the CHD in bytes.
+uint64_t chd_reader_logical_bytes(CHDReader *reader);
+
+/// Returns the bytes per CD frame.
+uint32_t chd_reader_frame_bytes(CHDReader *reader);
+
+/// Reads one complete CD frame.
+int chd_reader_read_frame(
+                          CHDReader *reader,
+                          uint32_t frame,
+                          uint8_t *output
+                          );
+
+/// Returns a human-readable error.
+const char *chd_reader_error(CHDReader *reader);
+}
+#ifdef __cplusplus
+}
+#endif

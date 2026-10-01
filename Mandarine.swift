@@ -241,11 +241,24 @@ public actor MandarineSystem {
     
     public nonisolated func boxartURLString(for url: URL) -> String? {
         var link: String? = nil
-        for file in files(from: url) {
-            let id: String = identifier(for: url.deletingLastPathComponent().appending(component: file))
-            if !id.isEmpty {
-                link = "https://raw.githubusercontent.com/xlenore/psx-covers/refs/heads/main/covers/default/\(id).jpg"
-                break
+        
+        if url.pathExtension.lowercased() == "chd" {
+            do {
+                let reader: CHDReader = try CHDReader(url: url)
+                let game: ID = try reader.gameIdentifier()
+                
+                link = "https://raw.githubusercontent.com/xlenore/psx-covers/refs/heads/main/covers/default/\(game.id.replacingOccurrences(of: ".", with: "")).jpg"
+            } catch {
+                print(error, error.localizedDescription)
+            }
+        } else {
+            let files: [String] = files(from: url)
+            for file in files {
+                let id: String = identifier(for: url.deletingLastPathComponent().appending(component: file))
+                if !id.isEmpty {
+                    link = "https://raw.githubusercontent.com/xlenore/psx-covers/refs/heads/main/covers/default/\(id).jpg"
+                    break
+                }
             }
         }
         
