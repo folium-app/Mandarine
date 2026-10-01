@@ -336,8 +336,12 @@ void mandarine::initialize_system(void) {
     m_cntnr.controller.reset();
     Sound::close();
     
-    m_cntnr.system = system_tools::hardReset();
-    m_cntnr.system->state = System::State::stop;
+    if (m_cntnr.system == nullptr) {
+        m_cntnr.system = system_tools::hardReset();
+    } else {
+        m_cntnr.system->reset();
+        m_cntnr.system->state = System::State::stop;
+    }
     
     Sound::init();
     m_cntnr.controller = std::make_unique<GCInputManager>();
@@ -376,14 +380,9 @@ void mandarine::start(void) {
         while (!token.stop_requested()) {
             switch (m_cntnr.system->state) {
                 case System::State::halted:
-                    printf("halted\n");
-                    break;
                 case System::State::stop:
-                    printf("stopped\n");
-                    break;
                 case System::State::pause:
-                    printf("paused\n");
-                    continue;
+                    break;
                 case System::State::run:
                     m_cntnr.system->gpu->clear();
                     m_cntnr.system->controller->update();
@@ -409,8 +408,6 @@ void mandarine::stop(void) {
     
     system_tools::saveMemoryCard(m_cntnr.system, 0, true);
     system_tools::saveMemoryCard(m_cntnr.system, 1, true);
-    
-    m_cntnr.system->state = System::State::stop;
     
     mandarine::destroy_system();
 }

@@ -114,7 +114,7 @@ struct System {
     template <typename Peripheral>
     constexpr void reset_peripheral(const Peripheral&);
     
-    constexpr bool reset(bool /* soft */ = true);
+    bool reset(bool /* soft */ = true);
     
     bool load(const std::string& /* path */);
     bool load(const std::vector<uint8_t>& /* data */, bool /* is_exe */ = false);

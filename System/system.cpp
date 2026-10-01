@@ -374,7 +374,7 @@ constexpr void System::reset_peripheral(const Peripheral& peripheral) {
     }, peripheral);
 }
 
-constexpr bool System::reset(bool soft) {
+bool System::reset(bool soft) {
     std::vector<PeripheralTypes> peripherals{
         dma.get(),
         expansion2.get(),
