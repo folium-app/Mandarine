@@ -338,6 +338,7 @@ void mandarine::initialize_system(void) {
     
     if (m_cntnr.system == nullptr) {
         m_cntnr.system = system_tools::hardReset();
+        m_cntnr.system->state = System::State::stop;
     } else {
         m_cntnr.system->reset();
         m_cntnr.system->state = System::State::stop;
