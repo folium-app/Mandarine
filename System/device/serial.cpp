@@ -1,4 +1,17 @@
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/device/serial.h"
+
+#else
+
+#include "device/serial.h"
+
+#endif // TARGET_OS_IPHONE
+
 #include <fmt/core.h>
 
 Serial::Serial() { reset(); }

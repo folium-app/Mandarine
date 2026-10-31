@@ -1,15 +1,31 @@
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/system.h"
 #include "avocado/bios/functions.h"
 #include "avocado/debugger/debugger.h"
 #include "avocado/utils/event.h"
 #include "avocado/utils/string.h"
 
+#else
+
+#include "system.h"
+#include "bios/functions.h"
+#include "debugger/debugger.h"
+#include "utils/event.h"
+#include "utils/string.h"
+
+#endif // TARGET_OS_IPHONE
+
 #include <ranges>
 #include <string_view>
 
 #include <fmt/color.h>
 #include <fmt/core.h>
-#include <magic_enum.hpp>
+#include <magic_enum/magic_enum.hpp>
 
 bios::Function::Function(std::function<bool(System*)> callback, std::string_view argv) : callback{std::move(callback)} {
     const auto start = argv.find('(');
@@ -27,43 +43,30 @@ bios::Function::Function(std::function<bool(System*)> callback, std::string_view
     
     for (const auto&& part : std::views::split(parameters, ',')) {
         auto parameter = trim(std::string_view{part});
-        
-        // Find the final whitespace separating type and name.
+
         const auto delimiter = parameter.find_last_of(" \t");
-        
         if (delimiter == std::string_view::npos)
-            throw std::runtime_error(
-                                     fmt::format("[BIOS] Invalid parameter without type: {}", argv)
-                                     );
+            throw std::runtime_error(fmt::format("[BIOS] Invalid parameter without type: {}", argv));
         
         const auto type = trim(parameter.substr(0, delimiter));
         const auto name = trim(parameter.substr(delimiter + 1));
         
         if (type.empty() || name.empty())
-            throw std::runtime_error(
-                                     fmt::format("[BIOS] Invalid parameter: {}", argv)
-                                     );
+            throw std::runtime_error(fmt::format("[BIOS] Invalid parameter: {}", argv));
         
         Argument argument;
         argument.name = name;
         
-        if (type == "char") {
+        if (type == "char")
             argument.type = Argument::Type::CHARACTER;
-        }
-        else if (type == "char*" || type == "const char*") {
+        else if (type == "char*" || type == "const char*")
             argument.type = Argument::Type::CHARACTER_POINTER;
-        }
-        else if (type == "int" || type == "FILE*") {
+        else if (type == "int" || type == "FILE*")
             argument.type = Argument::Type::INTEGER;
-        }
-        else if (type == "void*") {
+        else if (type == "void*")
             argument.type = Argument::Type::POINTER;
-        }
-        else {
-            throw std::runtime_error(
-                                     fmt::format("[BIOS] Invalid parameter type '{}' in: {}", type, argv)
-                                     );
-        }
+        else
+            throw std::runtime_error(fmt::format("[BIOS] Invalid parameter type '{}' in: {}", type, argv));
         
         arguments.emplace_back(std::move(argument));
     }

@@ -1,9 +1,26 @@
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/disc/load.h"
-#include <array>
-#include "avocado/disc/format/ecm_parser.h"
 #include "avocado/disc/format/chd_format.h"
 #include "avocado/disc/format/cue_parser.h"
+#include "avocado/disc/format/ecm_parser.h"
 #include "avocado/utils/file.h"
+
+#else
+
+#include "disc/load.h"
+#include "disc/format/chd_format.h"
+#include "disc/format/cue_parser.h"
+#include "disc/format/ecm_parser.h"
+#include "utils/file.h"
+
+#endif // TARGET_OS_IPHONE
+
+#include <array>
 
 namespace disc {
 const std::array<std::string, 6> discFormats = {"chd", "cue", "iso", "bin", "img", "ecm"};

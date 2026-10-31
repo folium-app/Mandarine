@@ -1,7 +1,21 @@
 #pragma once
+
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
+#include "avocado/utils/macros.h"
+
+#else
+
+#include "utils/macros.h"
+
+#endif // TARGET_OS_IPHONE
+
 #include <cstdint>
 #include <type_traits>
-#include "avocado/utils/macros.h"
 
 template <typename T>
 INLINE constexpr uint32_t align_mips(uint32_t address) {

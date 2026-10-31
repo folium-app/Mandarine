@@ -1,6 +1,20 @@
-#include "avocado/device/ram_control.h"
-#include <fmt/core.h>
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/config.h"
+#include "avocado/device/ram_control.h"
+
+#else
+
+#include "config.h"
+#include "device/ram_control.h"
+
+#endif // TARGET_OS_IPHONE
+
+#include <fmt/core.h>
 
 RamControl::RamControl() {
     verbose = config.debug.log.memoryControl > 0;

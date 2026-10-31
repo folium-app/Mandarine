@@ -1,9 +1,26 @@
-#include "avocado/device/gpu/render/render.h"
-#include <algorithm>
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/device/gpu/psx_color.h"
 #include "avocado/device/gpu/render/dither.h"
+#include "avocado/device/gpu/render/render.h"
 #include "avocado/device/gpu/render/texture_utils.h"
 #include "avocado/utils/macros.h"
+
+#else
+
+#include "device/gpu/psx_color.h"
+#include "device/gpu/render/dither.h"
+#include "device/gpu/render/render.h"
+#include "device/gpu/render/texture_utils.h"
+#include "utils/macros.h"
+
+#endif // TARGET_OS_IPHONE
+
+#include <algorithm>
 
 #undef VRAM
 #define VRAM ((uint16_t(*)[gpu::VRAM_WIDTH])gpu->vram.data())

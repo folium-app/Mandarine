@@ -1,6 +1,22 @@
 #pragma once
+
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/device/device.h"
 #include "avocado/device/gpu/semi_transparency.h"
+
+#else
+
+#include "device/device.h"
+#include "device/gpu/semi_transparency.h"
+
+#endif // TARGET_OS_IPHONE
+
+#include <vector>
 
 namespace gpu {
 

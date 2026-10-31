@@ -1,6 +1,20 @@
-#include "avocado/device/dma/dma3_channel.h"
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/device/cdrom/cdrom.h"
+#include "avocado/device/dma/dma3_channel.h"
 #include "avocado/utils/file.h"
+
+#else
+
+#include "device/cdrom/cdrom.h"
+#include "device/dma/dma3_channel.h"
+#include "utils/file.h"
+
+#endif // TARGET_OS_IPHONE
 
 namespace device::dma {
 uint32_t DMA3Channel::readDevice() {

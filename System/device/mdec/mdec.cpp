@@ -1,8 +1,23 @@
-#include "avocado/device/mdec/mdec.h"
-#include <fmt/core.h>
-#include <cassert>
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/config.h"
 #include "avocado/device/gpu/psx_color.h"
+#include "avocado/device/mdec/mdec.h"
+
+#else
+
+#include "config.h"
+#include "device/gpu/psx_color.h"
+#include "device/mdec/mdec.h"
+
+#endif // TARGET_OS_IPHONE
+
+#include <fmt/core.h>
+#include <cassert>
 
 namespace mdec {
 

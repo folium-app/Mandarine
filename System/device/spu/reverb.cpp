@@ -1,9 +1,26 @@
-#include "avocado/device/spu/reverb.h"
-#include <vector>
-#include "avocado/device/spu/adsr.h"
-#include "avocado/device/spu/sample.h"
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/device/device.h"
+#include "avocado/device/spu/adsr.h"
+#include "avocado/device/spu/reverb.h"
+#include "avocado/device/spu/sample.h"
 #include "avocado/utils/math.h"
+
+#else
+
+#include "device/device.h"
+#include "device/spu/adsr.h"
+#include "device/spu/reverb.h"
+#include "device/spu/sample.h"
+#include "utils/math.h"
+
+#endif // TARGET_OS_IPHONE
+
+#include <vector>
 
 namespace spu {
 uint32_t wrap(SPU* spu, uint32_t address) {

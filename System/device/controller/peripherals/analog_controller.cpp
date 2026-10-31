@@ -1,9 +1,25 @@
-#include "avocado/device/controller/peripherals/analog_controller.h"
-#include <fmt/core.h>
-#include <magic_enum.hpp>
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/config.h"
+#include "avocado/device/controller/peripherals/analog_controller.h"
 #include "avocado/input/input_manager.h"
 #include "avocado/utils/event.h"
+
+#else
+
+#include "config.h"
+#include "device/controller/peripherals/analog_controller.h"
+#include "input/input_manager.h"
+#include "utils/event.h"
+
+#endif // TARGET_OS_IPHONE
+
+#include <fmt/core.h>
+#include <magic_enum/magic_enum.hpp>
 
 namespace peripherals
 {

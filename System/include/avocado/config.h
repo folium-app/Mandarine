@@ -1,9 +1,25 @@
 #pragma once
-#include <string>
-#include <unordered_map>
+
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/device/controller/controller_type.h"
 #include "avocado/device/gpu/rendering_mode.h"
 #include "avocado/utils/event.h"
+
+#else
+
+#include "device/controller/controller_type.h"
+#include "device/gpu/rendering_mode.h"
+#include "utils/event.h"
+
+#endif // TARGET_OS_IPHONE
+
+#include <string>
+#include <unordered_map>
 
 namespace avocado {
 extern std::string PATH_DATA;  // Read-only directory, distributed with emulator

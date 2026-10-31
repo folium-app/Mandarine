@@ -1,5 +1,18 @@
 #pragma once
+
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/disc/disc.h"
+
+#else
+
+#include "disc/disc.h"
+
+#endif // TARGET_OS_IPHONE
 
 namespace disc {
 

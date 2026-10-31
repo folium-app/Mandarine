@@ -1,8 +1,16 @@
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/cpu/gte/gte.h"
 
-using gte::Matrix;
-using gte::toVector;
-using gte::Vector;
+#else
+
+#include "cpu/gte/gte.h"
+
+#endif // TARGET_OS_IPHONE
 
 int32_t GTE::clip(int32_t value, int32_t max, int32_t min, uint32_t flags) {
     if (value > max) {
@@ -95,14 +103,14 @@ void GTE::nclip() {
     setMac<0>((int64_t)s[0].x * s[1].y + s[1].x * s[2].y + s[2].x * s[0].y - s[0].x * s[2].y - s[1].x * s[0].y - s[2].x * s[1].y);
 }
 
-void GTE::multiplyVectors(Vector<int16_t> v1, Vector<int16_t> v2, Vector<int16_t> tr) {
+void GTE::multiplyVectors(gte::Vector<int16_t> v1, gte::Vector<int16_t> v2, gte::Vector<int16_t> tr) {
     setMacAndIr<1>(((int64_t)tr.x << 12) + v1.x * v2.x, lm);
     setMacAndIr<2>(((int64_t)tr.y << 12) + v1.y * v2.y, lm);
     setMacAndIr<3>(((int64_t)tr.z << 12) + v1.z * v2.z, lm);
 }
 
-void GTE::multiplyMatrixByVector(Matrix m, Vector<int16_t> v, Vector<int32_t> tr) {
-    Vector<int64_t> result;
+void GTE::multiplyMatrixByVector(gte::Matrix m, gte::Vector<int16_t> v, gte::Vector<int32_t> tr) {
+    gte::Vector<int64_t> result;
 
     result.x = O(1, O(1, O(1, ((int64_t)tr.x << 12) + m[0][0] * v.x) + m[0][1] * v.y) + m[0][2] * v.z);
     result.y = O(2, O(2, O(2, ((int64_t)tr.y << 12) + m[1][0] * v.x) + m[1][1] * v.y) + m[1][2] * v.z);
@@ -113,8 +121,8 @@ void GTE::multiplyMatrixByVector(Matrix m, Vector<int16_t> v, Vector<int32_t> tr
     setMacAndIr<3>(result.z, lm);
 }
 
-int64_t GTE::multiplyMatrixByVectorRTP(Matrix m, Vector<int16_t> v, Vector<int32_t> tr) {
-    Vector<int64_t> result;
+int64_t GTE::multiplyMatrixByVectorRTP(gte::Matrix m, gte::Vector<int16_t> v, gte::Vector<int32_t> tr) {
+    gte::Vector<int64_t> result;
 
     result.x = O(1, O(1, O(1, ((int64_t)tr.x << 12) + m[0][0] * v.x) + m[0][1] * v.y) + m[0][2] * v.z);
     result.y = O(2, O(2, O(2, ((int64_t)tr.y << 12) + m[1][0] * v.x) + m[1][1] * v.y) + m[1][2] * v.z);
@@ -135,9 +143,9 @@ int64_t GTE::multiplyMatrixByVectorRTP(Matrix m, Vector<int16_t> v, Vector<int32
 
 void GTE::ncds(int n) {
     multiplyMatrixByVector(light, v[n]);
-    multiplyMatrixByVector(color, toVector(ir), backgroundColor);
+    multiplyMatrixByVector(color, gte::to_vector(ir), backgroundColor);
 
-    auto prevIr = toVector(ir);
+    auto prevIr = gte::to_vector(ir);
 
     setMacAndIr<1>(((int64_t)farColor.r << 12) - (R * ir[1]));
     setMacAndIr<2>(((int64_t)farColor.g << 12) - (G * ir[2]));
@@ -151,7 +159,7 @@ void GTE::ncds(int n) {
 
 void GTE::ncs(int n) {
     multiplyMatrixByVector(light, v[n]);
-    multiplyMatrixByVector(color, toVector(ir), backgroundColor);
+    multiplyMatrixByVector(color, gte::to_vector(ir), backgroundColor);
     pushColor();
 }
 
@@ -163,21 +171,21 @@ void GTE::nct() {
 
 void GTE::nccs(int n) {
     multiplyMatrixByVector(light, v[n]);
-    multiplyMatrixByVector(color, toVector(ir), backgroundColor);
-    multiplyVectors(Vector<int16_t>(R, G, B), toVector(ir));
+    multiplyMatrixByVector(color, gte::to_vector(ir), backgroundColor);
+    multiplyVectors(gte::Vector<int16_t>(R, G, B), gte::to_vector(ir));
     pushColor();
 }
 
 void GTE::cc() {
-    multiplyMatrixByVector(color, toVector(ir), backgroundColor);
-    multiplyVectors(Vector<int16_t>(R, G, B), toVector(ir));
+    multiplyMatrixByVector(color, gte::to_vector(ir), backgroundColor);
+    multiplyVectors(gte::Vector<int16_t>(R, G, B), gte::to_vector(ir));
     pushColor();
 }
 
 void GTE::cdp() {
-    multiplyMatrixByVector(color, toVector(ir), backgroundColor);
+    multiplyMatrixByVector(color, gte::to_vector(ir), backgroundColor);
 
-    auto prevIr = toVector(ir);
+    auto prevIr = gte::to_vector(ir);
 
     setMacAndIr<1>(((int64_t)farColor.r << 12) - (R * ir[1]));
     setMacAndIr<2>(((int64_t)farColor.g << 12) - (G * ir[2]));
@@ -217,12 +225,12 @@ void GTE::dpcs(bool useRGB0) {
     setMacAndIr<2>(((int64_t)farColor.g << 12) - (g << 12));
     setMacAndIr<3>(((int64_t)farColor.b << 12) - (b << 12));
 
-    multiplyVectors(Vector<int16_t>(ir[0]), toVector(ir), Vector<int16_t>(r, g, b));
+    multiplyVectors(gte::Vector<int16_t>(ir[0]), gte::to_vector(ir), gte::Vector<int16_t>(r, g, b));
     pushColor();
 }
 
 void GTE::dcpl() {
-    auto prevIr = toVector(ir);
+    auto prevIr = gte::to_vector(ir);
 
     setMacAndIr<1>(((int64_t)farColor.r << 12) - (R * prevIr.x));
     setMacAndIr<2>(((int64_t)farColor.g << 12) - (G * prevIr.y));
@@ -235,13 +243,13 @@ void GTE::dcpl() {
 }
 
 void GTE::intpl() {
-    auto prevIr = toVector(ir);
+    auto prevIr = gte::to_vector(ir);
 
     setMacAndIr<1>(((int64_t)farColor.r << 12) - (prevIr.x << 12));
     setMacAndIr<2>(((int64_t)farColor.g << 12) - (prevIr.y << 12));
     setMacAndIr<3>(((int64_t)farColor.b << 12) - (prevIr.z << 12));
 
-    multiplyVectors(Vector<int16_t>(ir[0]), toVector(ir), prevIr);
+    multiplyVectors(gte::Vector<int16_t>(ir[0]), gte::to_vector(ir), prevIr);
     pushColor();
 }
 
@@ -383,7 +391,7 @@ void GTE::avsz3() { setOtz(setMac<0>((int64_t)zsf3 * (s[1].z + s[2].z + s[3].z))
 void GTE::avsz4() { setOtz(setMac<0>((int64_t)zsf4 * (s[0].z + s[1].z + s[2].z + s[3].z))); }
 
 void GTE::mvmva(int mx, int vx, int tx) {
-    Matrix Mx;
+    gte::Matrix Mx;
     if (mx == 0) {
         Mx = rotation;
     } else if (mx == 1) {
@@ -399,7 +407,7 @@ void GTE::mvmva(int mx, int vx, int tx) {
         Mx[2][0] = Mx[2][1] = Mx[2][2] = rotation[1][1];
     }
 
-    Vector<int16_t> V;
+    gte::Vector<int16_t> V;
     if (vx == 0) {
         V = v[0];
     } else if (vx == 1) {
@@ -412,7 +420,7 @@ void GTE::mvmva(int mx, int vx, int tx) {
         V.z = ir[3];
     }
 
-    Vector<int32_t> Tx;
+    gte::Vector<int32_t> Tx;
     if (tx == 0) {
         Tx = translation;
     } else if (tx == 1) {
@@ -421,7 +429,7 @@ void GTE::mvmva(int mx, int vx, int tx) {
         // Buggy FarColor vector operation
         Tx = farColor;
 
-        Vector<int64_t> result;
+        gte::Vector<int64_t> result;
         // Flag is calculated from 1st component
         setIr<1>(O(1, ((int64_t)Tx.x << 12) + Mx[0][0] * V.x) >> (sf * 12));
         setIr<2>(O(2, ((int64_t)Tx.y << 12) + Mx[1][0] * V.x) >> (sf * 12));
@@ -451,7 +459,7 @@ void GTE::mvmva(int mx, int vx, int tx) {
  * Result is also saved as 24bit color
  */
 void GTE::gpf() {
-    multiplyVectors(Vector<int16_t>(ir[0]), toVector(ir));
+    multiplyVectors(gte::Vector<int16_t>(ir[0]), gte::to_vector(ir));
     pushColor();
 }
 
@@ -470,7 +478,7 @@ void GTE::gpl() {
  * Square vector
  * lm is ignored, as result cannot be negative
  */
-void GTE::sqr() { multiplyVectors(toVector(ir), toVector(ir)); }
+void GTE::sqr() { multiplyVectors(gte::to_vector(ir), gte::to_vector(ir)); }
 
 void GTE::op() {
     setMac<1>(rotation[1][1] * ir[3] - rotation[2][2] * ir[2]);

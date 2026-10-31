@@ -1,5 +1,19 @@
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/device/spu/interpolation.h"
+
+#else
+
+#include "device/spu/interpolation.h"
+
+#endif // TARGET_OS_IPHONE
+
 #include <cstdlib>
+
 namespace {
 std::array<int16_t, 0x200> gauss = {
     {-0x001, -0x001, -0x001, -0x001, -0x001, -0x001, -0x001, 0x001,  -0x001, -0x001, -0x001, -0x001, -0x001, -0x001, -0x001, 0x001,  0x0000,

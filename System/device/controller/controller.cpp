@@ -1,11 +1,30 @@
-#include "avocado/device/controller/controller.h"
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/config.h"
+#include "avocado/system.h"
+#include "avocado/device/controller/controller.h"
 #include "avocado/device/controller/peripherals/analog_controller.h"
 #include "avocado/device/controller/peripherals/digital_controller.h"
 #include "avocado/device/controller/peripherals/mouse.h"
 #include "avocado/device/controller/peripherals/none.h"
-#include "avocado/system.h"
 #include "avocado/utils/event.h"
+
+#else
+
+#include "config.h"
+#include "system.h"
+#include "device/controller/controller.h"
+#include "device/controller/peripherals/analog_controller.h"
+#include "device/controller/peripherals/digital_controller.h"
+#include "device/controller/peripherals/mouse.h"
+#include "device/controller/peripherals/none.h"
+#include "utils/event.h"
+
+#endif // TARGET_OS_IPHONE
 
 namespace device
 {

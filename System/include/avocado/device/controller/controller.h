@@ -3,11 +3,26 @@
  * as digital controller, analog controller, mouse and memory card.
  */
 #pragma once
+
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
+#include "avocado/device/device.h"
+#include "avocado/device/controller/peripherals/memory_card.h"
+
+#else
+
+#include "device/device.h"
+#include "device/controller/peripherals/memory_card.h"
+
+#endif // TARGET_OS_IPHONE
+
 #include <array>
 #include <memory>
 #include <string>
-#include "avocado/device/device.h"
-#include "avocado/device/controller/peripherals/memory_card.h"
 
 struct System;
 

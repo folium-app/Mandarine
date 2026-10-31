@@ -1,4 +1,16 @@
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/device/spu/adsr.h"
+
+#else
+
+#include "device/spu/adsr.h"
+
+#endif // TARGET_OS_IPHONE
 
 namespace spu {
 

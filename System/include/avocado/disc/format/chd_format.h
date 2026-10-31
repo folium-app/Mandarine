@@ -1,8 +1,23 @@
 #pragma once
-#include <memory>
-#include <chd.h>
+
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/disc/disc.h"
 #include "avocado/disc/track.h"
+
+#else
+
+#include "disc/disc.h"
+#include "disc/track.h"
+
+#endif // TARGET_OS_IPHONE
+
+#include <memory>
+#include <chd.h>
 
 namespace disc {
 namespace format {

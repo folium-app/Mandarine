@@ -8,7 +8,7 @@
 #include "avocado/bridge.h"
 #include "avocado/config.h"
 #include "avocado/system.h"
-#include "avocado/system_tools.h"
+#include "avocado/tools.h"
 #include "avocado/input/input_manager.h"
 #include "avocado/memory_card/card_formats.h"
 #include "avocado/sound/sound.h"
@@ -105,75 +105,6 @@ public:
     }
 };
 
-namespace Sound {
-std::deque<uint16_t> buffer;
-std::mutex audioMutex;
-};  // namespace Sound
-
-namespace {
-SDL_AudioDeviceID deviceID = 0;
-SDL_AudioStream* stream = nullptr;
-
-void audioCallback(void* userdata, SDL_AudioStream* stream, int additional_amount, int total_amount) {
-    (void)userdata;
-    
-    // additional_amount is byte count
-    if (additional_amount <= 0)
-        return;
-    
-    std::vector<uint8_t> data(additional_amount);
-    
-    std::unique_lock<std::mutex> lock(Sound::audioMutex);
-    
-    size_t samples_available = Sound::buffer.size();
-    size_t samples_needed = additional_amount / sizeof(int16_t);
-    
-    size_t samples_to_copy = std::min(samples_available, samples_needed);
-    
-    for (size_t i = 0; i < samples_to_copy; i++) {
-        int16_t sample = Sound::buffer.front();
-        Sound::buffer.pop_front();
-        
-        data.at(i * 2) = (uint8_t)sample & 0xFF;
-        data.at(i * 2 + 1) = (uint8_t)(sample >> 8) & 0xFF;
-    }
-    
-    SDL_PutAudioStreamData(stream, data.data(), additional_amount);
-}
-}  // namespace
-
-void Sound::init() {
-    SDL_SetMainReady();
-    SDL_Init(SDL_INIT_AUDIO);
-    
-    SDL_AudioSpec spec;
-    SDL_zero(spec);
-    spec.channels = 2;
-    spec.freq = 44100;
-    spec.format = SDL_AUDIO_S16;
-    
-    deviceID = SDL_OpenAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec);
-    stream = SDL_OpenAudioDeviceStream(deviceID, &spec, &audioCallback, nullptr);
-    
-    SDL_ResumeAudioStreamDevice(stream);
-}
-
-void Sound::play() {
-    SDL_ResumeAudioStreamDevice(stream);
-}
-
-void Sound::stop() {
-    SDL_PauseAudioStreamDevice(stream);
-}
-
-void Sound::close() {
-    SDL_DestroyAudioStream(stream);
-}
-
-void Sound::clearBuffer() {
-    buffer.clear();
-}
-
 double limitFramerate(bool framelimiter, bool ntsc) {
     static double timeToSkip = 0;
     static double counterFrequency = (double)SDL_GetPerformanceFrequency();
@@ -215,7 +146,6 @@ double limitFramerate(bool framelimiter, bool ntsc) {
 
     return fps;
 }
-
 
 struct MandarineCPP {
     MandarineCommon mandarineCommon{MandarineCommon::init()};
@@ -334,17 +264,18 @@ void mandarine::initialize_memory_cards(void) {
 
 void mandarine::initialize_system(void) {
     m_cntnr.controller.reset();
-    Sound::close();
+    sound::close();
     
     if (m_cntnr.system == nullptr) {
-        m_cntnr.system = system_tools::hardReset();
+        m_cntnr.system = tools::reset();
         m_cntnr.system->state = System::State::stop;
     } else {
         m_cntnr.system->reset();
+        m_cntnr.system->gpu->vram.fill(0);
         m_cntnr.system->state = System::State::stop;
     }
     
-    Sound::init();
+    sound::init();
     m_cntnr.controller = std::make_unique<GCInputManager>();
     InputManager::setInstance(m_cntnr.controller.get());
 }
@@ -356,7 +287,7 @@ void mandarine::destroy_system(void) {
 
 
 void mandarine::insert_disc(std::string path) {
-    system_tools::loadFile(m_cntnr.system, path);
+    tools::load(m_cntnr.system, path);
 }
 
 
@@ -407,8 +338,8 @@ void mandarine::stop(void) {
     if (m_cntnr.thread.joinable())
         m_cntnr.thread.join();
     
-    system_tools::saveMemoryCard(m_cntnr.system, 0, true);
-    system_tools::saveMemoryCard(m_cntnr.system, 1, true);
+    tools::handle_memory_card<true>(m_cntnr.system, 0, true);
+    tools::handle_memory_card<true>(m_cntnr.system, 1, true);
     
     mandarine::destroy_system();
 }
@@ -477,9 +408,9 @@ void mandarine::set_setting(mandarine::SETTING setting, bool value) {
         case SETTING::SOUND_ENABLED:
             config.options.sound.enabled = value;
             if (config.options.sound.enabled)
-                Sound::play();
+                sound::play();
             else
-                Sound::stop();
+                sound::stop();
             break;
         case SETTING::PRESERVE_STATE:
             config.options.emulator.preserveState = value;

@@ -1,4 +1,16 @@
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/disc/subchannel_q.h"
+
+#else
+
+#include "disc/subchannel_q.h"
+
+#endif // TARGET_OS_IPHONE
 
 namespace disc {
 

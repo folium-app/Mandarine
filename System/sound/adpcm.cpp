@@ -1,10 +1,29 @@
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/sound/adpcm.h"
-#include <cassert>
 #include "avocado/sound/tables.h"
 
-namespace ADPCM {
-int filterTablePos[5] = {0, 60, 115, 98, 122};
-int filterTableNeg[5] = {0, 0, -52, -55, -60};
+#else
+
+#include "sound/adpcm.h"
+#include "sound/tables.h"
+
+#endif // TARGET_OS_IPHONE
+
+#include <array>
+#include <cassert>
+#include <utility>
+
+namespace adpcm {
+
+std::pair<std::array<int, 5>, std::array<int, 5>> filter_table{
+    {0, 60, 115, 98, 122},
+    {0, 0, -52, -55, -60}
+};
 
 int16_t clamp_16bit(int32_t sample) {
     if (sample > 0x7fff) return 0x7fff;
@@ -13,48 +32,41 @@ int16_t clamp_16bit(int32_t sample) {
     return (int16_t)sample;
 }
 
-std::vector<int16_t> decode(uint8_t buffer[16], int32_t prevSample[2]) {
+std::vector<int16_t> decode(std::array<uint8_t, 16> buffer, std::array<int32_t, 2>& previous_sample) {
     std::vector<int16_t> decoded;
     decoded.reserve(28);
 
-    // Read ADPCM header
-    auto shift = buffer[0] & 0x0f;
-    auto filter = (buffer[0] & 0x70) >> 4;  // 0x40 for xa adpcm
-    if (shift > 12) shift = 9;
+    auto shift{buffer.at(0) & 0x0F};
+    auto filter{(buffer.at(0) & 0x70) >> 0x04};
 
-    if (filter > 4) filter = 4;  // TODO: Not sure, check behaviour on real HW
+    if (shift > 0x0C)
+        shift = 0x09;
 
-    auto filterPos = filterTablePos[filter];
-    auto filterNeg = filterTableNeg[filter];
+    if (filter > 0x04)
+        filter = 0x04;
 
-    for (auto n = 0; n < 28; n++) {
-        // Read currently decoded nibble
-        int16_t nibble = buffer[2 + n / 2];
-        if (n % 2 == 0) {
-            nibble = (nibble & 0x0f);
-        } else {
-            nibble = (nibble & 0xf0) >> 4;
-        }
+    auto positive_filter{filter_table.first.at(filter)};
+    auto negative_filter{filter_table.second.at(filter)};
 
-        // Extend 4bit sample to 16bit
-        int32_t sample = (int32_t)(int16_t)(nibble << 12);
+    for (int index = 0; index < 28; index++) {
+        int16_t nibble{buffer.at(2 + index / 2)};
+        if (index % 2 == 0)
+            nibble = nibble & 0x0F;
+        else
+            nibble = (nibble & 0xF0) >> 0x04;
 
-        // Shift right by value in header
+        int32_t sample{static_cast<int32_t>(static_cast<int16_t>(nibble << 0x0C))};
         sample >>= shift;
+        sample += (previous_sample.at(0) * positive_filter + previous_sample.at(1) * negative_filter + 0x20) / 0x40;
 
-        // Mix previous samples
-        sample += (prevSample[0] * filterPos + prevSample[1] * filterNeg + 32) / 64;
-
-        // clamp to -0x8000 +0x7fff
         decoded.push_back(clamp_16bit(sample));
 
-        // Move previous samples forward
-        prevSample[1] = prevSample[0];
-        prevSample[0] = sample;
+        previous_sample.at(1) = previous_sample.at(0);
+        previous_sample.at(0) = sample;
     }
 
     return decoded;
-}
+};
 
 // Separate buffers and counters for left and right channels
 // TODO: Come up with better solution. Are two buffers really necessary?
@@ -108,8 +120,8 @@ std::vector<int16_t> decodePacket(uint8_t buffer[128], int32_t prevSample[2], bo
         auto filter = (buffer[4 + block] & 0x30) >> 4;
         if (shift > 12) shift = 9;
 
-        auto filterPos = filterTablePos[filter];
-        auto filterNeg = filterTableNeg[filter];
+        auto positive_filter{filter_table.first.at(filter)};
+        auto negative_filter{filter_table.second.at(filter)};
 
         for (auto n = 0; n < 28; n++) {
             // Read currently decoded nibble
@@ -127,7 +139,7 @@ std::vector<int16_t> decodePacket(uint8_t buffer[128], int32_t prevSample[2], bo
             sample >>= shift;
 
             // Mix previous samples
-            sample += (prevSample[0] * filterPos + prevSample[1] * filterNeg + 32) / 64;
+            sample += (prevSample[0] * positive_filter + prevSample[1] * negative_filter + 32) / 64;
 
             // clamp to -0x8000 +0x7fff
             // Intepolate 37800Hz to 44100Hz

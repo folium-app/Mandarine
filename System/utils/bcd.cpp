@@ -1,4 +1,16 @@
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/utils/bcd.h"
+
+#else
+
+#include "utils/bcd.h"
+
+#endif // TARGET_OS_IPHONE
 
 namespace bcd {
 uint8_t toBinary(uint8_t bcd) {

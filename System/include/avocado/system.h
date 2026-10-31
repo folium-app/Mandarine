@@ -1,21 +1,50 @@
 #pragma once
+
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/constants.h"
 #include "avocado/cpu/cpu.h"
 #include "avocado/device/cache_control.h"
+#include "avocado/device/expansion2.h"
+#include "avocado/device/interrupt.h"
+#include "avocado/device/memory_control.h"
+#include "avocado/device/serial.h"
+#include "avocado/device/timer.h"
 #include "avocado/device/cdrom/cdrom.h"
 #include "avocado/device/controller/controller.h"
 #include "avocado/device/dma/dma.h"
-#include "avocado/device/expansion2.h"
 #include "avocado/device/gpu/gpu.h"
-#include "avocado/device/interrupt.h"
 #include "avocado/device/mdec/mdec.h"
-#include "avocado/device/memory_control.h"
 #include "avocado/device/ram_control.h"
-#include "avocado/device/serial.h"
 #include "avocado/device/spu/spu.h"
-#include "avocado/device/timer.h"
 #include "avocado/utils/macros.h"
 #include "avocado/utils/timing.h"
+
+#else
+
+#include "constants.h"
+#include "cpu/cpu.h"
+#include "device/cache_control.h"
+#include "device/expansion2.h"
+#include "device/interrupt.h"
+#include "device/memory_control.h"
+#include "device/serial.h"
+#include "device/timer.h"
+#include "device/cdrom/cdrom.h"
+#include "device/controller/controller.h"
+#include "device/dma/dma.h"
+#include "device/gpu/gpu.h"
+#include "device/mdec/mdec.h"
+#include "device/ram_control.h"
+#include "device/spu/spu.h"
+#include "utils/macros.h"
+#include "utils/timing.h"
+
+#endif // TARGET_OS_IPHONE
 
 #include <cstdint>
 #include <cstdlib>

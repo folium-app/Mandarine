@@ -1,6 +1,20 @@
 #pragma once
-#include <cassert>
+
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/device/interrupt.h"
+
+#else
+
+#include "device/interrupt.h"
+
+#endif // TARGET_OS_IPHONE
+
+#include <cassert>
 
 namespace gui::debug {
 class Timers;

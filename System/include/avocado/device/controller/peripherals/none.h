@@ -1,7 +1,22 @@
 #pragma once
-#include <string>
-#include "avocado/device/controller/peripherals/abstract_device.h"
+
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/device/device.h"
+#include "avocado/device/controller/peripherals/abstract_device.h"
+
+#else
+
+#include "device/device.h"
+#include "device/controller/peripherals/abstract_device.h"
+
+#endif // TARGET_OS_IPHONE
+
+#include <string>
 
 namespace peripherals {
 struct None : public AbstractDevice {

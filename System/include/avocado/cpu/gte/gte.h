@@ -1,11 +1,29 @@
 #pragma once
+
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
+#include "avocado/cpu/gte/command.h"
+#include "avocado/cpu/gte/math.h"
+#include "avocado/device/device.h"
+#include "avocado/utils/logic.h"
+
+#else
+
+#include "cpu/gte/command.h"
+#include "cpu/gte/math.h"
+#include "device/device.h"
+#include "utils/logic.h"
+
+#endif // TARGET_OS_IPHONE
+
+#include <array>
 #include <cstddef>
 #include <cstdint>
 #include <vector>
-#include "avocado/cpu/gte/command.h"
-#include "avocado/device/device.h"
-#include "avocado/cpu/gte/math.h"
-#include "avocado/utils/logic.h"
 
 namespace gui::debug
 {
@@ -80,7 +98,7 @@ class GTE
     gte::Vector<int16_t> v[3];
     Reg32 rgbc;
     uint16_t otz = 0;
-    int16_t ir[4] = {0};
+    std::array<int16_t, 0x04> ir;
     gte::Vector<int16_t, int16_t, uint16_t> s[4];
     Reg32 rgb[3];
     uint32_t res1 = 0;    // prohibited

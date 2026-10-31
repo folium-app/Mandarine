@@ -1,6 +1,20 @@
 #pragma once
-#include <memory>
+
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/device/device.h"
+
+#else
+
+#include "device/device.h"
+
+#endif // TARGET_OS_IPHONE
+
+#include <memory>
 
 struct COP0 {
     // cop0r7 DCIC - breakpoint control

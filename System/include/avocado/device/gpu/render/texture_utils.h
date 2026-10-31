@@ -1,8 +1,24 @@
 #pragma once
-#include "avocado/device/gpu/gpu.h"
-#include "avocado/utils/macros.h"
+
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/device/gpu/color_depth.h"
+#include "avocado/device/gpu/gpu.h"
 #include "avocado/device/gpu/primitive.h"
+#include "avocado/utils/macros.h"
+
+#else
+
+#include "device/gpu/color_depth.h"
+#include "device/gpu/gpu.h"
+#include "device/gpu/primitive.h"
+#include "utils/macros.h"
+
+#endif // TARGET_OS_IPHONE
 
 #define gpuVRAM ((uint16_t(*)[gpu::VRAM_WIDTH])gpu->vram.data())
 
