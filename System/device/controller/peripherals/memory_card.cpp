@@ -1,7 +1,22 @@
-#include "avocado/device/controller/peripherals/memory_card.h"
-#include <fmt/core.h>
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/config.h"
+#include "avocado/device/controller/peripherals/memory_card.h"
 #include "avocado/utils/event.h"
+
+#else
+
+#include "config.h"
+#include "device/controller/peripherals/memory_card.h"
+#include "utils/event.h"
+
+#endif // TARGET_OS_IPHONE
+
+#include <fmt/core.h>
 
 namespace peripherals
 {

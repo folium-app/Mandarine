@@ -1,8 +1,25 @@
 #pragma once
-#include <vector>
-#include "avocado/device/spu/adsr.h"
+
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/device/device.h"
+#include "avocado/device/spu/adsr.h"
 #include "avocado/device/spu/regs.h"
+
+#else
+
+#include "device/device.h"
+#include "device/spu/adsr.h"
+#include "device/spu/regs.h"
+
+#endif // TARGET_OS_IPHONE
+
+#include <array>
+#include <vector>
 
 namespace spu {
 struct Voice {
@@ -43,7 +60,7 @@ struct Voice {
     uint64_t cycles;  // For dismissing KeyOff write right after KeyOn
 
     // ADPCM decoding
-    int32_t prevSample[2];
+    std::array<int32_t, 2> previous_sample;
     std::vector<int16_t> decodedSamples;
     std::vector<int16_t> prevDecodedSamples;
 
@@ -74,7 +91,7 @@ struct Voice {
         ar(flagsParsed);
         ar(sample);
         ar(cycles);
-        ar(prevSample);
+        ar(previous_sample);
         ar(decodedSamples);
         ar(prevDecodedSamples);
     }

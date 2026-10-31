@@ -1,6 +1,21 @@
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/memory_card/card_formats.h"
 #include "avocado/utils/file.h"
+
+#else
+
+#include "memory_card/card_formats.h"
+#include "utils/file.h"
+
+#endif // TARGET_OS_IPHONE
+
 #include <fmt/core.h>
+
 #include <algorithm>
 
 namespace memory_card {

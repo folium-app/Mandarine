@@ -1,5 +1,7 @@
 #pragma once
+
 #include <dexode/EventBus.hpp>
+
 #include <string>
 
 extern dexode::EventBus::Listener listener;

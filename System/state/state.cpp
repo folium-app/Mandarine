@@ -1,20 +1,39 @@
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
+#include "avocado/config.h"
+#include "avocado/system.h"
 #include "avocado/state/state.h"
-#include <fmt/core.h>
-#include <fmt/format.h>
-#include <fmt/format-inl.h>
+#include "avocado/disc/load.h"
+#include "avocado/utils/file.h"
+
+#else
+
+#include "config.h"
+#include "system.h"
+#include "state/state.h"
+#include "disc/load.h"
+#include "utils/file.h"
+
+#endif // TARGET_OS_IPHONE
+
 #include <cereal/archives/binary.hpp>
 #include <cereal/types/array.hpp>
 #include <cereal/types/deque.hpp>
 #include <cereal/types/string.hpp>
 #include <cereal/types/utility.hpp>
 #include <cereal/types/vector.hpp>
+
+#include <fmt/core.h>
+#include <fmt/format.h>
+#include <fmt/format-inl.h>
+
 #include <chrono>
 #include <deque>
 #include <sstream>
-#include "avocado/config.h"
-#include "avocado/disc/load.h"
-#include "avocado/system.h"
-#include "avocado/utils/file.h"
 
 using namespace std::chrono_literals;
 

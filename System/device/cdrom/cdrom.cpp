@@ -1,15 +1,35 @@
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
+#include "avocado/config.h"
+#include "avocado/system.h"
 #include "avocado/device/cdrom/cdrom.h"
+#include "avocado/disc/empty.h"
+#include "avocado/disc/track.h"
+#include "avocado/sound/adpcm.h"
+#include "avocado/utils/bcd.h"
+#include "avocado/utils/cd.h"
+
+#else
+
+#include "config.h"
+#include "system.h"
+#include "device/cdrom/cdrom.h"
+#include "disc/empty.h"
+#include "disc/track.h"
+#include "sound/adpcm.h"
+#include "utils/bcd.h"
+#include "utils/cd.h"
+
+#endif // TARGET_OS_IPHONE
+
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/format-inl.h>
 #include <cassert>
-#include "avocado/disc/track.h"
-#include "avocado/config.h"
-#include "avocado/disc/empty.h"
-#include "avocado/sound/adpcm.h"
-#include "avocado/system.h"
-#include "avocado/utils/bcd.h"
-#include "avocado/utils/cd.h"
 
 namespace device {
 namespace cdrom {
@@ -150,7 +170,7 @@ void CDROM::handleSector() {
             }
 
             if (this->mode.xaEnabled && !this->mute) {
-                auto frame = ADPCM::decodeXA(rawSector.data() + 24, codinginfo);
+                auto frame = adpcm::decodeXA(rawSector.data() + 24, codinginfo);
 
                 for (auto sample : frame) {
                     audio.push_back(mixSample(sample));

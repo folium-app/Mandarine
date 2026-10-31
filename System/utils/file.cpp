@@ -1,4 +1,16 @@
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/utils/file.h"
+
+#else
+
+#include "utils/file.h"
+
+#endif // TARGET_OS_IPHONE
 
 std::string getPath(const std::string& name) {
     size_t begin = 0, end = name.length();

@@ -1,14 +1,34 @@
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
+#include "avocado/config.h"
 #include "avocado/system.h"
+#include "avocado/bios/functions.h"
+#include "avocado/sound/sound.h"
+#include "avocado/utils/address.h"
+#include "avocado/utils/file.h"
+#include "avocado/utils/gpu_draw_list.h"
+#include "avocado/utils/psx_exe.h"
+
+#else
+
+#include "config.h"
+#include "system.h"
+#include "bios/functions.h"
+#include "sound/sound.h"
+#include "utils/address.h"
+#include "utils/file.h"
+#include "utils/gpu_draw_list.h"
+#include "utils/psx_exe.h"
+
+#endif // TARGET_OS_IPHONE
+
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/format-inl.h>
-#include "avocado/bios/functions.h"
-#include "avocado/config.h"
-#include "avocado/sound/sound.h"
-#include "avocado/utils/address.h"
-#include "avocado/utils/gpu_draw_list.h"
-#include "avocado/utils/file.h"
-#include "avocado/utils/psx_exe.h"
 
 #include <variant>
 #include <vector>
@@ -612,7 +632,7 @@ void System::emulateFrame() {
 
         if (spu->bufferReady) {
             spu->bufferReady = false;
-            Sound::appendBuffer(spu->audioBuffer.begin(), spu->audioBuffer.end());
+            sound::append(spu->audioBuffer.begin(), spu->audioBuffer.end());
         }
 
         controller->step();
@@ -630,10 +650,9 @@ void System::emulateFrame() {
                 auto mode1 = static_cast<modes>(timers.at(1)->mode.syncMode);
                 if (mode1 == modes::resetAtVblank or mode1 == modes::resetAtVblankAndPauseOutside)
                     timers.at(1)->current._reg = 0;
-                else if (mode1 == modes::pauseUntilVblankAndFreerun) {
+                else if (mode1 == modes::pauseUntilVblankAndFreerun)
                     timers.at(1)->paused = false;
                     timers.at(1)->mode.syncEnabled = false;
-                }
             }
         }
         // Handle Timer1 - Reset on VBlank

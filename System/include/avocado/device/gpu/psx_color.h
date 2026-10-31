@@ -1,8 +1,24 @@
 #pragma once
-#include <cstdint>
+
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/device/gpu/semi_transparency.h"
 #include "avocado/utils/macros.h"
 #include "avocado/utils/math.h"
+
+#else
+
+#include "device/gpu/semi_transparency.h"
+#include "utils/macros.h"
+#include "utils/math.h"
+
+#endif // TARGET_OS_IPHONE
+
+#include <cstdint>
 
 #undef RGB // Some header is adding this macro on Windows
 // Union for storing 24bit color (used in GPU commands)

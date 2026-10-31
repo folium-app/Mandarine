@@ -1,4 +1,16 @@
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/device/gpu/psx_color.h"
+
+#else
+
+#include "device/gpu/psx_color.h"
+
+#endif // TARGET_OS_IPHONE
 
 RGB operator*(const RGB& lhs, const float rhs) {
     RGB c;

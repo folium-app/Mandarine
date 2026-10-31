@@ -1,19 +1,42 @@
-#include "avocado/device/spu/spu.h"
-#include <fmt/core.h>
-#include <fmt/format.h>
-#include <fmt/format-inl.h>
-#include <array>
-#include <functional>
-#include <vector>
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
+#include "avocado/config.h"
+#include "avocado/system.h"
 #include "avocado/device/cdrom/cdrom.h"
 #include "avocado/device/spu/interpolation.h"
 #include "avocado/device/spu/reverb.h"
 #include "avocado/device/spu/sample.h"
+#include "avocado/device/spu/spu.h"
 #include "avocado/sound/adpcm.h"
-#include "avocado/system.h"
 #include "avocado/utils/file.h"
 #include "avocado/utils/math.h"
-#include "avocado/config.h"
+
+#else
+
+#include "config.h"
+#include "system.h"
+#include "device/cdrom/cdrom.h"
+#include "device/spu/interpolation.h"
+#include "device/spu/reverb.h"
+#include "device/spu/sample.h"
+#include "device/spu/spu.h"
+#include "sound/adpcm.h"
+#include "utils/file.h"
+#include "utils/math.h"
+
+#endif // TARGET_OS_IPHONE
+
+#include <fmt/core.h>
+#include <fmt/format.h>
+#include <fmt/format-inl.h>
+
+#include <array>
+#include <functional>
+#include <vector>
 
 using namespace spu;
 
@@ -37,7 +60,7 @@ void SPU::step(device::cdrom::CDROM* cdrom) {
 
         if (voice.decodedSamples.empty()) {
             auto block = readBlock(voice.currentAddress._reg * 8);
-            voice.decodedSamples = ADPCM::decode(block.data(), voice.prevSample);
+            voice.decodedSamples = adpcm::decode(block, voice.previous_sample);
             voice.flagsParsed = false;
         }
 

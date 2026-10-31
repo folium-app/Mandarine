@@ -1,5 +1,18 @@
-#include "avocado/device/cache_control.h"
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/system.h"
+#include "avocado/device/cache_control.h"
+
+#else
+
+#include "system.h"
+#include "device/cache_control.h"
+
+#endif // TARGET_OS_IPHONE
 
 CacheControl::CacheControl(System* sys) : sys(sys) { reset(); }
 

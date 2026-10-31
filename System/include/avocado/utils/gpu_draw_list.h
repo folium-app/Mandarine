@@ -1,6 +1,20 @@
 #pragma once
-#include <string>
+
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/system.h"
+
+#else
+
+#include "system.h"
+
+#endif // TARGET_OS_IPHONE
+
+#include <string>
 
 namespace GpuDrawList {
 extern int framesToCapture;

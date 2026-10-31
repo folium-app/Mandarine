@@ -1,5 +1,18 @@
 #pragma once
+
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/device/device.h"
+
+#else
+
+#include "device/device.h"
+
+#endif // TARGET_OS_IPHONE
 
 namespace peripherals {
 enum class Type { None, Digital, Analog, Mouse, MemoryCard };

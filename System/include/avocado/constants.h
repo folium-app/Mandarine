@@ -82,6 +82,10 @@ constexpr int BASE = 0x1F800000;
 constexpr int SIZE = 0x400;
 };
 
+namespace sound {
+constexpr int SIZE = 0x4000;
+};
+
 namespace timers {
 constexpr int SIZE = 3;
 };

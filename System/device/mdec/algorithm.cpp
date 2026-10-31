@@ -1,7 +1,22 @@
-#include <tuple>
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/device/mdec/mdec.h"
 #include "avocado/utils/logic.h"
 #include "avocado/utils/math.h"
+
+#else
+
+#include "device/mdec/mdec.h"
+#include "utils/logic.h"
+#include "utils/math.h"
+
+#endif // TARGET_OS_IPHONE
+
+#include <tuple>
 
 namespace mdec {
 std::array<int16_t, 64> crblk = {{0}};

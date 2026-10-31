@@ -1,4 +1,17 @@
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/utils/vector.h"
+
+#else
+
+#include "utils/vector.h"
+
+#endif // TARGET_OS_IPHONE
+
 #include <cmath>
 
 vec2::vec2(const ivec2& v) : x(static_cast<float>(v.x)), y(static_cast<float>(v.y)) {}

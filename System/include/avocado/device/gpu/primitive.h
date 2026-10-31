@@ -1,9 +1,25 @@
 #pragma once
+
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
+#include "avocado/device/gpu/psx_color.h"
+#include "avocado/device/gpu/semi_transparency.h"
+#include "avocado/utils/vector.h"
+
+#else
+
+#include "device/gpu/psx_color.h"
+#include "device/gpu/semi_transparency.h"
+#include "utils/vector.h"
+
+#endif // TARGET_OS_IPHONE
+
 #include <cmath>
 #include <utility>
-#include "avocado/device/gpu/semi_transparency.h"
-#include "avocado/device/gpu/psx_color.h"
-#include "avocado/utils/vector.h"
 
 namespace primitive {
 struct Rect {

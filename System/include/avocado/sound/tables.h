@@ -1,5 +1,7 @@
+#pragma once
+
 #include <cstdint>
 
-namespace ADPCM {
+namespace adpcm {
 extern int16_t zigzagTables[7][29];
 };

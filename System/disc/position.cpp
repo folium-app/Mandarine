@@ -1,7 +1,21 @@
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/disc/position.h"
+
+#else
+
+#include "disc/position.h"
+
+#endif // TARGET_OS_IPHONE
+
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/format-inl.h>
+
 #include <cstdlib>
 
 namespace disc {

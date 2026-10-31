@@ -1,7 +1,22 @@
 #pragma once
-#include <optional>
-#include "avocado/disc/position.h"
+
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/disc/disc.h"
+#include "avocado/disc/position.h"
+
+#else
+
+#include "disc/disc.h"
+#include "disc/position.h"
+
+#endif // TARGET_OS_IPHONE
+
+#include <optional>
 
 namespace disc {
 struct Track {

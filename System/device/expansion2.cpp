@@ -1,5 +1,19 @@
-#include "avocado/device/expansion2.h"
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/config.h"
+#include "avocado/device/expansion2.h"
+
+#else
+
+#include "config.h"
+#include "device/expansion2.h"
+
+#endif // TARGET_OS_IPHONE
+
 #include <cstdio>
 
 Expansion2::Expansion2() { reset(); }

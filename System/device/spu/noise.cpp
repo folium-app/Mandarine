@@ -1,4 +1,17 @@
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/device/spu/noise.h"
+
+#else
+
+#include "device/spu/noise.h"
+
+#endif // TARGET_OS_IPHONE
+
 #include <array>
 
 namespace {

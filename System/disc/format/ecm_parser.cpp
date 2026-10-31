@@ -1,7 +1,21 @@
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/disc/format/ecm_parser.h"
+
+#else
+
+#include "disc/format/ecm_parser.h"
+
+#endif // TARGET_OS_IPHONE
+
 #include <fmt/core.h>
-#include <utility>
+
 #include <array>
+#include <utility>
 
 namespace {
 constexpr std::array<uint32_t, 256> edcLUT = []() {

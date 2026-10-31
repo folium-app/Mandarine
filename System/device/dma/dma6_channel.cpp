@@ -1,7 +1,21 @@
-#include "avocado/device/dma/dma6_channel.h"
-#include <fmt/core.h>
-#include <magic_enum.hpp>
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/system.h"
+#include "avocado/device/dma/dma6_channel.h"
+
+#else
+
+#include "system.h"
+#include "device/dma/dma6_channel.h"
+
+#endif // TARGET_OS_IPHONE
+
+#include <fmt/core.h>
+#include <magic_enum/magic_enum.hpp>
 
 namespace device::dma {
 DMA6Channel::DMA6Channel(Channel channel, System* sys) : DMAChannel(channel, sys) {}

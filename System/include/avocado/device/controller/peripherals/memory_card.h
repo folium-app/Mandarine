@@ -1,6 +1,20 @@
 #pragma once
-#include <array>
+
+#if __APPLE__
+#include <TargetConditionals.h>
+#endif
+
+#if TARGET_OS_IPHONE
+
 #include "avocado/device/controller/peripherals/abstract_device.h"
+
+#else
+
+#include "device/controller/peripherals/abstract_device.h"
+
+#endif // TARGET_OS_IPHONE
+
+#include <array>
 
 namespace peripherals {
 struct MemoryCard : public AbstractDevice {
